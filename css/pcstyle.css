@@ -1,0 +1,162 @@
+/* patternchooser.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #f7f4ea; /* soft paper */
+    font-family: 'Patrick Hand', system-ui, sans-serif;
+}
+
+.pc-wrapper {
+    min-height: 100vh;
+    padding: 24px 32px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Header */
+
+.pc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.pc-title {
+    font-size: 40px;
+    letter-spacing: 1px;
+}
+
+/* Top-right nav buttons */
+
+.pc-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.pc-nav-btn {
+    padding: 8px 14px;
+    border-radius: 18px;
+    border: 1px solid #d0c6aa;
+    background: #fffdf6;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Patrick Hand', system-ui, sans-serif;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.08);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+.pc-nav-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    background: #fff8e6;
+}
+
+/* Main layout */
+
+.pc-main {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) 220px; /* left main, right stack */
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Main cards (3 across-ish; tweak as you like) */
+
+.pc-main-cards {
+    display: flex;
+    gap: 14px;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.pc-card {
+    position: relative;
+    width: 220px;
+    padding: 14px 12px 12px;
+    background: #fffef8;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border: 1px solid #e0d7c5;
+    transform: rotate(-1deg);
+}
+
+.pc-card-title {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.pc-card-notes {
+    margin: 0 0 10px;
+    font-size: 14px;
+    line-height: 1.25;
+    font-family: 'Kalam', cursive;
+}
+
+/* Buttons inside cards */
+
+.pc-card-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.pc-btn {
+    flex: 1;
+    padding: 5px 6px;
+    font-size: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Patrick Hand', system-ui, sans-serif;
+}
+
+.pc-btn-ghost {
+    border: 1px solid #d6c9af;
+    background: #fff;
+}
+
+.pc-btn-primary {
+    border: none;
+    background: #ffd889;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+}
+
+/* Saved stack on right */
+
+.pc-saved {
+    position: relative;
+}
+
+.pc-saved-label {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.pc-saved-card {
+    position: relative;
+    width: 100%;
+    padding: 8px 8px 6px;
+    margin-bottom: -40px; /* overlap */
+    background: #fffef9;
+    border-radius: 10px;
+    border: 1px solid #d3c5a8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.18);
+    font-size: 13px;
+    transform-origin: center;
+}
+
+/* slight fanned look via data-index if you want later */
+
+/* Logo bottom-left */
+
+.pc-logo-link {
+    position: fixed;
+    left: 18px;
+    bottom: 18px;
+}
+
+.pc-logo {
+    height: 40px; /* adjust to match your OutBox logo */
+    opacity: 0.9;
+}

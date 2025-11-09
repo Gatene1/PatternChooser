@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PatternChooser</title>
+
+    <!-- Temp fonts: adjust later -->
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/pcstyle.css0">
+</head>
+<body>
+
+<div class="pc-wrapper">
+
+    <!-- Top bar -->
+    <header class="pc-header">
+        <div class="pc-title">PatternChooser</div>
+
+        <nav class="pc-nav">
+            <button class="pc-nav-btn" data-mode="simple">Simple Draw</button>
+            <button class="pc-nav-btn" data-mode="similar">Similar Patterns</button>
+            <button class="pc-nav-btn" data-mode="contrast">Contrast Patterns</button>
+            <button class="pc-nav-btn" data-mode="credits">Credits</button>
+        </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="pc-main">
+
+        <!-- 3 main cards area -->
+        <section class="pc-main-cards" id="mainCards">
+            <!-- Example card; JS will generate real ones -->
+            <!-- Template idea:
+            <article class="pc-card" data-pattern-id="">
+              <h2 class="pc-card-title">Risk &amp; Reward</h2>
+              <p class="pc-card-notes">A short note about how this pattern shapes tension.</p>
+              <div class="pc-card-actions">
+                <button class="pc-btn pc-btn-ghost" data-action="remove">Remove</button>
+                <button class="pc-btn pc-btn-primary" data-action="save">Add to Scrapbook →</button>
+              </div>
+            </article>
+            -->
+        </section>
+
+        <!-- Saved cards stack on right -->
+        <aside class="pc-saved" id="savedStack">
+            <h3 class="pc-saved-label">Scrapbook</h3>
+            <!-- Saved cards will stack here -->
+        </aside>
+
+    </main>
+
+    <!-- Bottom-left logo -->
+    <a class="pc-logo-link" href="https://outboxgames.com" target="_ogSite" rel="noopener">
+        <img src="Images/oglogo.svg" alt="OutBox Games" class="pc-logo">
+    </a>
+
+</div>
+
+<script src="js/pcmain.js"></script>
+</body>
+</html>

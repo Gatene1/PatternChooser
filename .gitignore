@@ -1,0 +1,30 @@
+# === OS/IDE files ===
+.DS_Store
+Thumbs.db
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+out/
+workspace.xml
+
+# === Build caches (if you ever use a bundler later) ===
+dist/
+build/
+temp/
+tmp/
+
+# === Node (if you ever add npm later) ===
+node_modules/
+npm-debug.log*
+
+# === Local testing ===
+*.log
+*.tmp
+*.bak
+/SpruceHandoff
+
+# === Personal files ===
+.env
+.vscode/
+__MACOSX/
