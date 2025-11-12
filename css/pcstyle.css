@@ -1,12 +1,21 @@
 /* patternchooser.css */
 
-body {
-    margin: 0;
-    padding: 0;
-    background: #f7f4ea; /* soft paper */
-    font-family: 'Patrick Hand', system-ui, sans-serif;
+
+/* ---- Tab sizing controls ---- */
+:root {
+    --tab-scale: 0.7; /* 0.5 = 50%, bump to taste */
+    --tab-h: calc(100px * var(--tab-scale));
+    --tab-overlap: 1.0; /* how much of the tab height overlaps the paper */
+    --tab-tilt: -1.2deg;       /* angle of active tab “bend” */
+    --tab-hover-lift: -0.03;   /* how high tab raises on hover (in % of height) */
+    --tab-active-lift: -0.05;  /* lift when selected (in % of height) */
+    --tab-shadow: 0 5px 10px rgba(0,0,0,0.25); /* global drop shadow tone */
 }
 
+body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-serif';
+    background-image: url('../Images/desk_bg.jpg'); }
+
+/* Make sure the sheet centers inside the padded wrapper */
 .pc-wrapper {
     min-height: 100vh;
     padding: 24px 32px;
@@ -15,148 +24,323 @@ body {
 }
 
 /* Header */
-
+/* Header spacing adjusts because it's now inside the sheet */
 .pc-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: clamp(12px, 2vw, 20px);
+}
+.pc-title { font-size: 40px; letter-spacing: 1px; }
+
+
+
+.pc-nav::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(rgba(0,0,0,0.05), transparent);
+    border-radius: 0 0 4px 4px;
+    pointer-events: none;
 }
 
-.pc-title {
-    font-size: 40px;
-    letter-spacing: 1px;
+.pc-nav::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+    border-radius: 3px; background: #e2d7b8;
 }
 
-/* Top-right nav buttons */
-
+/* Top-right nav tabs (image version) */
 .pc-nav {
     display: flex;
-    gap: 8px;
+    gap: 12px;
+    align-items: flex-end;
+    justify-content: flex-end; /* right-align if you want; can switch to center if preferred */
+    position: relative;
+    padding-bottom: 6px;
+    transform: translateY(calc(var(--tab-h) * var(--tab-overlap) * -1));
+    z-index: 10;               /* sit above the paper */
+    overflow: visible;
 }
 
+.pc-nav::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    border-radius: 3px;
+    background: #e2d7b8;
+}
+
+/* Image tabs */
+.pc-nav-img{
+    /* native PNG size is ~219×100; we scale from that */
+    width:  calc(219px * var(--tab-scale));
+    height: calc(100px * var(--tab-scale));
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: inline-block;
+
+    /* make sure corners actually show through */
+    background-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.12));
+    transition: transform .12s ease, filter .12s ease;
+
+    /* Unified transform pipeline using CSS vars */
+    --raise: 0px;
+    --tilt:  0deg;
+    transform: translateY(var(--raise)) rotate(var(--tilt));
+
+}
+
+.pc-nav-img:hover {
+    transform: translateY(calc(var(--tab-hover-lift) * var(--tab-scale) * 100px));
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)) brightness(1.05);
+}
+
+.pc-nav-img:active{
+    --raise: 0px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.2)) brightness(.98);
+}
+
+/* Active tab: small upward bend + a hair higher */
+.pc-nav-img.is-active {
+    transform: translateY(calc(var(--tab-active-lift) * var(--tab-scale) * 100px)) rotate(var(--tab-tilt));
+    filter: var(--tab-shadow) brightness(1.08);
+}
+
+/* Individual images */
+.pc-tab-simple   { background-image: url('../Images/tab_simple.png'); }
+.pc-tab-similar  { background-image: url('../Images/tab_similar.png'); }
+.pc-tab-contrast { background-image: url('../Images/tab_contrast.png'); }
+.pc-tab-credits  { background-image: url('../Images/tab_credits.png'); }
+
+
 .pc-nav-btn {
-    padding: 8px 14px;
-    border-radius: 18px;
-    border: 1px solid #d0c6aa;
-    background: #fffdf6;
+    padding: 10px 14px 9px;
+    border-radius: 10px;
+    border: 2px solid #c7b78d;
+    background: linear-gradient(#fff5c9, #ffe39a);
+    color: #2c2c2c;
     cursor: pointer;
     font-size: 16px;
     font-family: 'Patrick Hand', system-ui, sans-serif;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.08);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+    transform: translateY(0);
+    transition: transform .08s ease, box-shadow .08s ease, background .12s ease, filter .12s ease;
 }
-
 .pc-nav-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-    background: #fff8e6;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.18);
+    background: linear-gradient(#fff7cf, #ffeaad);
+    filter: saturate(1.1);
 }
-
+.pc-nav-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.15);
+}
+/* Active tab sits “on top” */
+.pc-nav-btn.is-active {
+    background: linear-gradient(#fff9d8, #ffeeb6);
+    border-color: #bcae86;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.18);
+}
 /* Main layout */
-
+/* Keep the 3-column layout inside the sheet */
 .pc-main {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) 220px; /* left main, right stack */
+    grid-template-columns: minmax(0, 3fr) 240px;
     gap: 24px;
     align-items: flex-start;
 }
-
 /* Main cards (3 across-ish; tweak as you like) */
-
-.pc-main-cards {
-    display: flex;
-    gap: 14px;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-}
-
-.pc-card {
-    position: relative;
-    width: 220px;
-    padding: 14px 12px 12px;
-    background: #fffef8;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    border: 1px solid #e0d7c5;
-    transform: rotate(-1deg);
-}
-
-.pc-card-title {
-    margin: 0 0 6px;
-    font-size: 20px;
-}
-
-.pc-card-notes {
-    margin: 0 0 10px;
-    font-size: 14px;
-    line-height: 1.25;
-    font-family: 'Kalam', cursive;
-}
-
+.pc-main-cards { display: flex; gap: 14px; flex-wrap: nowrap; align-items: flex-start; }
+.pc-card { position: relative; width: 260px; padding: 14px 12px 12px; background: #fffef8; border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); border: 1px solid #e0d7c5; transform: rotate(-1deg); }
+.pc-card-title { margin: 0 0 6px; font-size: 20px; }
+.pc-card-notes { margin: 0 0 10px; font-size: 14px; line-height: 1.25; font-family: 'Kalam', cursive; }
 /* Buttons inside cards */
-
-.pc-card-actions {
-    display: flex;
-    justify-content: space-between;
-    gap: 6px;
+.pc-card-actions { display: flex; justify-content: space-between; gap: 6px; }
+.pc-btn { flex: 1; padding: 5px 6px; font-size: 12px; border-radius: 12px; cursor: pointer;
+    font-family: 'Patrick Hand', system-ui, sans-serif; }
+.pc-btn-ghost { border: 1px solid #d6c9af; background: #fff; }
+.pc-btn-primary { border: none; background: #ffd889; box-shadow: 0 2px 4px rgba(0,0,0,0.18); }
+/* Button hover polish (inside cards) */
+.pc-btn:hover {
+    filter: saturate(1.1);
 }
-
-.pc-btn {
-    flex: 1;
-    padding: 5px 6px;
-    font-size: 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: 'Patrick Hand', system-ui, sans-serif;
-}
-
-.pc-btn-ghost {
-    border: 1px solid #d6c9af;
-    background: #fff;
-}
-
-.pc-btn-primary {
-    border: none;
-    background: #ffd889;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
-}
-
 /* Saved stack on right */
-
-.pc-saved {
-    position: relative;
+.pc-saved { position: relative; }
+.pc-saved-label { margin: 0 0 8px; font-size: 16px; }
+.pc-saved-card { position: relative; width: 100%; padding: 8px 8px 6px; margin-bottom: -40px; background: #fffef9;
+    border-radius: 10px; border: 1px solid #d3c5a8; box-shadow: 0 4px 8px rgba(0,0,0,0.18); font-size: 13px;
+    transform-origin: center; }
+/* Empty-state message */
+.pc-empty {
+    font-size: 18px;
+    opacity: 0.8;
+    padding: 18px;
+    background: #fffef8;
+    border: 1px dashed #d9cfb8;
+    border-radius: 12px;
 }
-
-.pc-saved-label {
-    margin: 0 0 8px;
-    font-size: 16px;
-}
-
-.pc-saved-card {
-    position: relative;
-    width: 100%;
-    padding: 8px 8px 6px;
-    margin-bottom: -40px; /* overlap */
-    background: #fffef9;
-    border-radius: 10px;
-    border: 1px solid #d3c5a8;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.18);
-    font-size: 13px;
-    transform-origin: center;
-}
-
 /* slight fanned look via data-index if you want later */
+/* Add one of these classes to any .pc-nav-btn to recolor */
+.pc-tab-blue  { background: linear-gradient(#e8f2ff, #cfe5ff); border-color:#a9bada; }
+.pc-tab-green { background: linear-gradient(#ebf9e8, #cff2c6); border-color:#a9c2a2; }
+.pc-tab-pink  { background: linear-gradient(#ffeaf4, #ffd1e6); border-color:#d7abc1; }
 
+/* Keep hover/active feeling consistent */
+.pc-tab-blue:hover  { background: linear-gradient(#f1f7ff, #dbecff); }
+.pc-tab-green:hover { background: linear-gradient(#f1fbef, #daf6d3); }
+.pc-tab-pink:hover  { background: linear-gradient(#fff0f7, #ffd9eb); }
 /* Logo bottom-left */
+.pc-logo-link { position: fixed; left: 18px; bottom: 18px; }
+.pc-logo { height: 40px; opacity: 0.9; }
 
-.pc-logo-link {
-    position: fixed;
-    left: 18px;
-    bottom: 18px;
+/* Modal overlay for Credits */
+.pc-modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: grid; place-items: center;
+    z-index: 999;
 }
 
-.pc-logo {
-    height: 40px; /* adjust to match your OutBox logo */
-    opacity: 0.9;
+.pc-modal {
+    background: #fffef8;
+    border: 1px solid #e0d7c5;
+    border-radius: 14px;
+    padding: 18px 20px;
+    width: min(520px, 92vw);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+.pc-modal h3 { margin: 0 0 8px; }
+.pc-modal p { margin: 0 0 12px; line-height: 1.35; }
+.pc-modal .pc-modal-actions { display: flex; justify-content: flex-end; }
+.pc-modal .pc-modal-close { padding: 8px 12px; border-radius: 10px; border: 1px solid #d6c9af; background:#fff; cursor:pointer; }
+/* Banner = doodle paper + logo + tape */
+.pc-banner {
+    /* keep header alignment happy */
+    display: inline-block;
+    width: min(560px, 44vw);
+}
+
+.pc-paper {
+    position: relative;
+    padding: clamp(10px, 2.2vw, 18px);
+    border-radius: 12px;
+    /* the slight handmade tilt */
+    transform: rotate(-2deg);
+    /*box-shadow: 0 6px 14px rgba(0,0,0,0.18);*/
+}
+
+.pc-logo-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* subtle lift so it feels printed-on but crisp */
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.06));
+    image-rendering: auto;
+}
+
+/* Tape sits on top-left, slightly skewed */
+.pc-tape {
+    position: absolute;
+    top: 8%;
+    left: 20%;
+    width: clamp(80px, 22%, 140px);
+    opacity: 0.8;              /* your 80% */
+    transform: rotate(-6deg);
+    pointer-events: none;       /* never intercept clicks */
+}
+
+/* Full scrapbook sheet sitting on the desk */
+/* Scrapbook sheet */
+.pc-canvas {
+    background: url('../Images/paper_doodles.png') center/1024px auto repeat;
+    border-radius: 16px;
+    padding: clamp(14px, 2.2vw, 24px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(0,0,0,0.08);
+
+    /* NEW: rock-solid centering + sensible width bounds */
+    width: clamp(960px, 90vw, 1280px);
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 28px;
+
+    box-sizing: border-box;
+    position: relative;
+    min-height: 72vh;
+    overflow: visible;
+    position: relative;
+}
+
+/* base = flat */
+.pc-nav-img {
+    --raise: 0px;
+    --tilt:  0deg;
+    transform: translateY(var(--raise)) rotate(var(--tilt));
+    transition: transform .12s ease, filter .12s ease;
+}
+
+/* hover = tiny lift (optional if you already have it) */
+.pc-nav-img:hover { --raise: calc(var(--tab-scale) * 100px * var(--tab-hover-lift)); }
+
+/* active = lifted + tilted */
+.pc-nav-img.is-active {
+    --raise: calc(var(--tab-scale) * 100px * var(--tab-active-lift));
+    --tilt:  var(--tab-tilt);
+}
+
+/* explicit reset when not active/hovered */
+.pc-nav-img:not(.is-active):not(:hover) {
+    --raise: 0px;
+    --tilt:  0deg;
+}
+
+/* just in case focus styles stick visually on click */
+.pc-nav-img:focus { outline: none; }
+
+
+/* Responsiveness */
+@media (max-width: 1100px) {
+    .pc-main { grid-template-columns: 1fr 200px; }
+    .pc-card { width: 200px; }
+}
+@media (max-width: 900px) {
+    .pc-main { grid-template-columns: 1fr; }
+    .pc-saved { order: 2; }
+    .pc-main-cards { order: 1; flex-wrap: wrap; }
+}
+@media (min-width: 1400px) {
+    .pc-wrapper { max-width: 1280px; margin: 0 auto; }
+    .pc-card { width: 240px; }
+}
+/* Optional: tighten at small widths */
+@media (max-width: 560px) {
+    .pc-banner { width: 92vw; }
+}
+@media (max-width: 1100px) { .pc-card { width: 220px; } }
+@media (min-width: 1400px) {
+    .pc-canvas { width: min(1280px, calc(100vw - 80px)); }
+    .pc-card { width: 280px; }
+}
+/* Mobile: reduce overlap a bit so tabs don't crowd */
+@media (max-width: 700px){
+    :root{ --tab-overlap: 0.4; }
 }
