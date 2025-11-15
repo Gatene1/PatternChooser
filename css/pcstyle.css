@@ -10,6 +10,11 @@
     --tab-hover-lift: -0.03;   /* how high tab raises on hover (in % of height) */
     --tab-active-lift: -0.05;  /* lift when selected (in % of height) */
     --tab-shadow: 0 5px 10px rgba(0,0,0,0.25); /* global drop shadow tone */
+    --card-w: 320px;            /* default */
+    --card-ratio: 735/685;      /* matches your card_bg.png */
+    --btn-h: 40px;              /* image button height */
+    --face-pad: 10px;           /* tweak me to nudge everything left/right */
+    --pc-banner-width: 100vw;     /* Banner Size */
 }
 
 body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-serif';
@@ -123,10 +128,10 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 }
 
 /* Individual images */
-.pc-tab-simple   { background-image: url('../Images/tab_simple.png'); }
-.pc-tab-similar  { background-image: url('../Images/tab_similar.png'); }
-.pc-tab-contrast { background-image: url('../Images/tab_contrast.png'); }
-.pc-tab-credits  { background-image: url('../Images/tab_credits.png'); }
+.pc-tab-simple   { background-image: url('../Images/tabs/tab_simple.png'); }
+.pc-tab-similar  { background-image: url('../Images/tabs/tab_similar.png'); }
+.pc-tab-contrast { background-image: url('../Images/tabs/tab_contrast.png'); }
+.pc-tab-credits  { background-image: url('../Images/tabs/tab_credits.png'); }
 
 
 .pc-nav-btn {
@@ -160,42 +165,27 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 }
 /* Main layout */
 /* Keep the 3-column layout inside the sheet */
-.pc-main {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) 240px;
-    gap: 24px;
-    align-items: flex-start;
+.pc-main{ display:grid; grid-template-columns: 1fr 300px; gap: 18px; }
+.pc-main-cards{
+    display:flex; flex-wrap:wrap; align-content:flex-start; justify-content:flex-start;
 }
-/* Main cards (3 across-ish; tweak as you like) */
-.pc-main-cards { display: flex; gap: 14px; flex-wrap: nowrap; align-items: flex-start; }
-.pc-card { position: relative; width: 260px; padding: 14px 12px 12px; background: #fffef8; border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15); border: 1px solid #e0d7c5; transform: rotate(-1deg); }
-.pc-card-title { margin: 0 0 6px; font-size: 20px; }
-.pc-card-notes { margin: 0 0 10px; font-size: 14px; line-height: 1.25; font-family: 'Kalam', cursive; }
-/* Buttons inside cards */
-.pc-card-actions { display: flex; justify-content: space-between; gap: 6px; }
-.pc-btn { flex: 1; padding: 5px 6px; font-size: 12px; border-radius: 12px; cursor: pointer;
-    font-family: 'Patrick Hand', system-ui, sans-serif; }
-.pc-btn-ghost { border: 1px solid #d6c9af; background: #fff; }
-.pc-btn-primary { border: none; background: #ffd889; box-shadow: 0 2px 4px rgba(0,0,0,0.18); }
-/* Button hover polish (inside cards) */
-.pc-btn:hover {
-    filter: saturate(1.1);
-}
-/* Saved stack on right */
-.pc-saved { position: relative; }
-.pc-saved-label { margin: 0 0 8px; font-size: 16px; }
+.pc-main-cards:empty{ display:none; }
+
+.pc-saved{ width:100%; }
+.pc-saved-label{ text-align:right; opacity:.8; margin:0 0 8px; font-family:"Patrick Hand"; }
 .pc-saved-card { position: relative; width: 100%; padding: 8px 8px 6px; margin-bottom: -40px; background: #fffef9;
     border-radius: 10px; border: 1px solid #d3c5a8; box-shadow: 0 4px 8px rgba(0,0,0,0.18); font-size: 13px;
     transform-origin: center; }
 /* Empty-state message */
 .pc-empty {
+    font-family:"Kalam", cursive;
     font-size: 18px;
     opacity: 0.8;
     padding: 18px;
     background: #fffef8;
     border: 1px dashed #d9cfb8;
     border-radius: 12px;
+    margin:12px;
 }
 /* slight fanned look via data-index if you want later */
 /* Add one of these classes to any .pc-nav-btn to recolor */
@@ -211,31 +201,16 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 .pc-logo-link { position: fixed; left: 18px; bottom: 18px; }
 .pc-logo { height: 40px; opacity: 0.9; }
 
-/* Modal overlay for Credits */
-.pc-modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: grid; place-items: center;
-    z-index: 999;
-}
 
-.pc-modal {
-    background: #fffef8;
-    border: 1px solid #e0d7c5;
-    border-radius: 14px;
-    padding: 18px 20px;
-    width: min(520px, 92vw);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.28);
-}
-.pc-modal h3 { margin: 0 0 8px; }
-.pc-modal p { margin: 0 0 12px; line-height: 1.35; }
-.pc-modal .pc-modal-actions { display: flex; justify-content: flex-end; }
-.pc-modal .pc-modal-close { padding: 8px 12px; border-radius: 10px; border: 1px solid #d6c9af; background:#fff; cursor:pointer; }
+
+
 /* Banner = doodle paper + logo + tape */
 .pc-banner {
     /* keep header alignment happy */
     display: inline-block;
-    width: min(560px, 44vw);
+    width: var(--pc-banner-width);
+    height: auto;
+    /*width: min(560px, 44vw);*/
 }
 
 .pc-paper {
@@ -262,7 +237,7 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
     top: 8%;
     left: 20%;
     width: clamp(80px, 22%, 140px);
-    opacity: 0.8;              /* your 80% */
+    opacity: 1;              /* your 80% */
     transform: rotate(-6deg);
     pointer-events: none;       /* never intercept clicks */
 }
@@ -317,30 +292,189 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 .pc-nav-img:focus { outline: none; }
 
 
-/* Responsiveness */
-@media (max-width: 1100px) {
-    .pc-main { grid-template-columns: 1fr 200px; }
-    .pc-card { width: 200px; }
+
+
+
+
+/* ==== CARD v2 (image-card + flip) ==== */
+/* ==== CARD (square corners, true size) ==== */
+.pc-card{
+    position: relative;
+    width: var(--card-w);
+    aspect-ratio: var(--card-ratio);
+    height: auto;
+    margin: 12px;
+    border-radius: 0;                 /* keep the square frame intact */
+    background: transparent;
+    box-shadow: 0 8px 14px rgba(0,0,0,.12);
+    perspective: 1000px;
 }
+.pc-card-inner{
+    position: relative; width:100%; height:100%;
+    transform-style: preserve-3d; transition: transform .5s ease; z-index:2;
+}
+.pc-card.is-flipped .pc-card-inner{ transform: rotateY(180deg); }
+
+.pc-face{
+    position:absolute; inset:0;
+    border-radius:0; backface-visibility:hidden;
+    background: url("../Images/cards/card_bg.png") center/100% 100% no-repeat;
+    padding: var(--face-pad) var(--face-pad) calc(var(--btn-h) + 24px);
+    box-sizing: border-box;
+}
+.pc-face.back{ transform: rotateY(180deg); }
+
+
+
+
+
+/* Title/body */
+.pc-card-title{
+    font-family:"Patrick Hand", cursive;
+    font-size: clamp(28px, calc(var(--card-w)/12), 44px);
+    line-height: .95; margin: 0 0 6px; color:#1d2a38;
+}
+.pc-card-body{
+    font-family:"Kalam", cursive;
+    font-size: clamp(16px, calc(var(--card-w)/26), 22px);
+    line-height: 1.35; color:#2c2c2c; margin: 4px 0 10px;
+}
+.pc-card-fig{ margin:-30px 0 10px; padding:15px; border:0; background:transparent; }
+.pc-card-img{ display:block; width:50%; height:auto; margin: auto; }
+
+/* Button strip INSIDE the card */
+.pc-card-tape{
+    position:absolute; top:-29px; left:30%;
+    width: clamp(70px, calc(var(--card-w)/2), 110px);
+    opacity:.8; transform: rotate(-4deg); z-index:3; pointer-events:none;
+}
+/* action bar hugs the left; no right edge */
+.pc-card-actions{
+    position: absolute;
+    left: var(--face-pad);
+    right: auto;                 /* stop stretching */
+    bottom: 12px;
+    width: max-content;          /* shrink-wrap the two buttons */
+    display: flex;
+    justify-content: flex-start; /* ⟵ makes them sit left */
+    gap: 10px;
+}
+.pc-imgbtn{ border:0; padding:0; background:transparent; cursor:pointer; }
+.pc-imgbtn>img{ display:block; height: var(--btn-h); }
+
+
+
+
+/* Modal overlay for Credits */
+/* ===== Credits Modal (final) ===== */
+#pc-modal{
+    position: fixed; inset: 0; display: none; z-index: 4000;   /* above tabs/desk */
+}
+#pc-modal.is-open{ display:block; }
+
+#pc-modal .pc-modal-backdrop{
+    position:absolute; inset:0; background:rgba(0,0,0,.40);
+}
+
+#pc-modal .pc-modal-dialog{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(560px, 92vw);
+    max-height: min(80vh, 600px);
+    overflow:auto; -webkit-overflow-scrolling:touch;
+    padding:20px; border-radius:12px;
+    background:#fffef8 url("../Images/paper_doodles.png") 0 0/1024px auto repeat;
+    border:2px solid #c19a2c; box-shadow:0 12px 28px rgba(0,0,0,.35);
+    font-family:"Kalam", cursive;
+}
+#pc-modal .pc-modal-dialog h2{
+    margin:0 0 8px; font-family:"Patrick Hand", cursive; font-size:32px;
+}
+.pc-modal h3 { margin: 0 0 8px; }
+.pc-modal p { margin: 0 0 12px; line-height: 1.35; }
+.pc-modal .pc-modal-actions { display: flex; justify-content: flex-end; }
+.pc-modal .pc-modal-close { padding: 8px 12px; border-radius: 10px; border: 1px solid #d6c9af; background:#fff; cursor:pointer; }
+.pc-modal-close{
+    margin-top:12px; padding:8px 14px; font-family:"Patrick Hand";
+    border:1px solid #c19a2c; background:#fff; cursor:pointer;
+}
+
+/* optional: prevent background scroll while open */
+body.modal-open{ overflow:hidden; }
+
+
+
+
+
+
+
+
+
+/* Responsiveness */
+
 @media (max-width: 900px) {
     .pc-main { grid-template-columns: 1fr; }
     .pc-saved { order: 2; }
     .pc-main-cards { order: 1; flex-wrap: wrap; }
+    :root {
+        --tab-scale: 0.55;
+        --tab-overlap: 0.9;
+    }
 }
-@media (min-width: 1400px) {
-    .pc-wrapper { max-width: 1280px; margin: 0 auto; }
-    .pc-card { width: 240px; }
+
+/* Mobile: reduce overlap a bit so tabs don't crowd */
+/* Mobile: smaller tabs and keep them on the paper */
+@media (max-width: 700px){
+    :root {
+        --tab-scale: 0.55;   /* shrink the tabs */
+        --tab-overlap: 0.3;  /* reduce how much they “sit” above the paper */
+    }
+
+    .pc-nav {
+        transform: translateY(calc(var(--tab-h) * var(--tab-overlap) * -1));   /* no lift on tiny screens */
+        padding-bottom: 4px;       /* small buffer under the tabs */
+        justify-content: center;   /* optional: center them on mobile */
+    }
 }
+
+/* Desktop stays two columns. On portrait/phone: single column, cards vertical */
+@media (max-width: 680px) {
+    :root{ --card-w: 92vw; }    /* reuse your CSS var if present */
+    .pc-empty {
+        font-size: 15px;
+        padding: 12px;
+        line-height: 1.4;
+    }
+
+    /* Stack main area nicely */
+    .pc-main {
+        grid-template-columns: 1fr;
+    }
+
+    .pc-main-cards {
+        flex-direction: column;
+        align-items: center;  /* center cards in the column */
+    }
+
+    .pc-saved {
+        order: 2;             /* Scrapbook below cards on mobile */
+    }
+}
+
 /* Optional: tighten at small widths */
 @media (max-width: 560px) {
-    .pc-banner { width: 92vw; }
 }
-@media (max-width: 1100px) { .pc-card { width: 220px; } }
-@media (min-width: 1400px) {
-    .pc-canvas { width: min(1280px, calc(100vw - 80px)); }
-    .pc-card { width: 280px; }
-}
-/* Mobile: reduce overlap a bit so tabs don't crowd */
-@media (max-width: 700px){
-    :root{ --tab-overlap: 0.4; }
+
+@media (max-width: 480px) {
+    :root {
+        --tab-scale: 0.45;
+        --tab-overlap: 0.9;
+        --pc-banner-width: 75vw;
+    }
+    .pc-empty {
+        font-size: 12px;
+        padding: 15px;
+        line-height: 2;
+    }
+
+    /*.pc-banner { width: 400px; }*/
 }

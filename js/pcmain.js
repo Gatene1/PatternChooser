@@ -1,5 +1,22 @@
 // pcmain.js
 
+//alert ("oh 5");
+
+const tabs = {
+    simple:  document.getElementById('tabSimple'),
+    similar: document.getElementById('tabSimilar'),
+    contrast:document.getElementById('tabContrast'),
+    credits: document.getElementById('tabCredits'),
+};
+
+// Core els
+const els = {
+    deck:  document.getElementById('mainCards'),
+    saved: document.getElementById('savedStack'),
+    empty: document.getElementById('emptyState'),
+    modal: null
+};
+
 // Example pool – expand as you like.
 const patterns = [
     { id: 'risk_reward', name: 'Risk & Reward', tags: ['tension','stakes'] },
@@ -22,7 +39,227 @@ const KEYS = {
     saved:       'pc_saved_cards'
 };
 
-/* ---- Always start fresh on page load ---- */
+let manifest, defaults, buttonsByCat;
+
+// util: fetch + allow // comments in JSON
+async function loadManifest(path) {
+    const raw = await fetch(path).then(r => r.text());
+    const noComments = raw.split('\n').filter(l => !l.trim().startsWith('//')).join('\n');
+    return JSON.parse(noComments);
+}
+
+// filename fallback helper (handles risk_vs_reward vs riskVsReward)
+function tryPaths(p) {
+    const tried = [p];
+    if (p.includes('_')) tried.push(p.replace(/_([a-z])/g, (_,c)=>c.toUpperCase()));
+    return tried;
+}
+
+
+
+
+
+function imgBtn(src, alt, onClick) {
+    const b = document.createElement('button');
+    b.className = 'pc-imgbtn';
+    const i = document.createElement('img');
+    i.src = src; i.alt = alt || '';
+    b.appendChild(i);
+    if (onClick) b.addEventListener('click', onClick);
+    return b;
+}
+
+function makeFront(p, catBtns) {
+    const face = document.createElement('section');
+    face.className = 'pc-face front';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'pc-card-title';
+    h2.textContent = p.title;
+
+    const body = document.createElement('p');
+    body.className = 'pc-card-body';
+    body.textContent = p.front;
+
+    const fig = document.createElement('figure');
+    fig.className = 'pc-card-fig';
+    const img = document.createElement('img');
+    // resolve diagram path w/ fallback
+    const diagramPaths = tryPaths(p.diagram);
+    img.src = diagramPaths[0];
+    img.onerror = () => { if (diagramPaths[1]) img.src = diagramPaths[1]; };
+    img.alt = `${p.title} diagram`;
+    img.className = 'pc-card-img';
+    fig.appendChild(img);
+
+    const actions = document.createElement('div');
+    actions.className = 'pc-card-actions';
+    actions.appendChild(imgBtn(catBtns.flip, 'Flip'));
+    actions.appendChild(imgBtn(catBtns.ats, 'Add To Scrapbook'));
+
+    face.append(h2, body, fig, actions);
+    return face;
+}
+
+function makeBack(p, catBtns) {
+    const face = document.createElement('section');
+    face.className = 'pc-face back';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'pc-card-title';
+    h2.textContent = p.title;
+
+    const body = document.createElement('div');
+    body.className = 'pc-card-body';
+
+    // Show ONLY the first recorded game (short + readable)
+    const fg = p.sources?.first_game;
+    if (fg) {
+        body.innerHTML = `<strong>First noted:</strong> ${fg.title} (${fg.year}) — ${fg.note}`;
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'pc-card-actions';
+    actions.appendChild(imgBtn(catBtns.back, 'Back'));
+
+    face.append(h2, body, actions);
+    return face;
+}
+
+function makeCard(p) {
+    const card = document.createElement('article');
+    card.className = 'pc-card';
+
+    // tape
+    const tape = document.createElement('img');
+    tape.className = 'pc-card-tape';
+    tape.src = p.tape || defaults.tape;
+    tape.alt = ''; tape.ariaHidden = 'true';
+    card.appendChild(tape);
+
+    // flip core
+    const inner = document.createElement('div');
+    inner.className = 'pc-card-inner';
+    card.appendChild(inner);
+
+    const catBtns = buttonsByCat[p.category] || Object.values(buttonsByCat)[0];
+    const front = makeFront(p, catBtns);
+    const back  = makeBack(p, catBtns);
+
+    inner.append(front, back);
+
+    // flip wiring
+    const [flipBtn, atsBtnFront] = front.querySelectorAll('.pc-imgbtn');
+    const [backBtn, atsBtnBack]  = back.querySelectorAll('.pc-imgbtn');
+
+    flipBtn.addEventListener('click', () => card.classList.add('is-flipped'));
+    backBtn.addEventListener('click', () => card.classList.remove('is-flipped'));
+
+    const add = () => addToSaved(p);
+    atsBtnFront.addEventListener('click', add);
+    //atsBtnBack .addEventListener('click', add);
+
+    return card;
+}
+
+function addToSaved(p) {
+    const item = document.createElement('div');
+    item.style.margin = '8px 0';
+    item.textContent = p.title;
+    els.saved.appendChild(item);
+}
+
+/*async function boot() {
+    manifest = await loadManifest('Images/patterns.json');
+    defaults = manifest.defaults || {};
+    buttonsByCat = manifest.buttons || {};
+    // deal the first 3
+    manifest.patterns.slice(0,3).forEach(p => {
+        els.deck.appendChild(makeCard(p));
+    });
+}*/
+
+
+// ===== states =====
+function showWelcome(){
+    els.empty.style.display = '';
+    clearDeck();
+}
+
+function onSimpleDraw(){
+    els.empty.style.display = 'none';
+    clearDeck();
+    deal(3);
+}
+
+function clearDeck(){
+    els.deck.innerHTML = '';
+}
+
+// ===== dealing =====
+function deal(n){
+    manifest.patterns.slice(0,n).forEach(p=>{
+        els.deck.appendChild(makeCard(p));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+
+async function boot() {
+    manifest = await loadManifest('Images/patterns.json');
+    defaults = manifest.defaults || {};
+    buttonsByCat = manifest.buttons || {};
+
+    // Start in welcome state
+    showWelcome();
+
+    // Wire tabs
+    tabs.simple?.addEventListener('click', (e)=>{ e.preventDefault(); onSimpleDraw(); });
+    tabs.credits?.addEventListener('click',(e)=>{ e.preventDefault(); openCredits(); });
+
+    // (Optional) keep placeholders for future:
+    tabs.similar?.addEventListener('click',(e)=>e.preventDefault());
+    tabs.contrast?.addEventListener('click',(e)=>e.preventDefault());
+}
+
+function openCredits(){
+    if(!els.modal){
+        els.modal = document.createElement('div');
+        els.modal.id = 'pc-modal';
+        els.modal.innerHTML = `
+      <div class="pc-modal-backdrop"></div>
+      <div class="pc-modal-dialog" role="dialog" aria-modal="true" aria-label="Credits">
+        <h2>Credits</h2>
+        <p><strong>PatternChooser</strong></p>
+        <p>A joint creation by David Riley<br>
+        and AI Partner (Spruce).<br>
+        David handled the scrapbook vibes,<br>
+        layout flair, diagrams, and the entire<br>
+        visual identity.<br>
+        Spruce wrangled the wiring, logic, and kept<br>
+        the tabs from falling off the digital<br>
+        notebook.<br><br>
+
+        Fonts: Patrick Hand + Kalam<br>
+        Powered by too many late-night ideas<br>
+        and a dangerous amount of creativity.<br>
+        <button class="pc-modal-close" aria-label="Close">Close</button>
+      </div>`;
+        document.body.appendChild(els.modal);
+        els.modal.querySelector('.pc-modal-backdrop').addEventListener('click', closeCredits);
+        els.modal.querySelector('.pc-modal-close').addEventListener('click', closeCredits);
+    }
+    document.body.classList.add('modal-open');     // ⟵ lock background
+    els.modal.classList.add('is-open');
+}
+
+function closeCredits(){
+    document.body.classList.remove('modal-open');
+    els.modal?.classList.remove('is-open');
+}
+
+/*
+/* ---- Always start fresh on page load ----
 localStorage.removeItem(KEYS.currentDraw);
 localStorage.removeItem(KEYS.saved);
 
@@ -182,7 +419,7 @@ function contrastDraw() {
     render();
 }
 
-/* ---- Credits modal ---- */
+/* ---- Credits modal ----
 function openCredits() {
     const backdrop = document.createElement('div');
     backdrop.className = 'pc-modal-backdrop';
@@ -204,7 +441,7 @@ function openCredits() {
     document.body.appendChild(backdrop);
 }
 
-/* ---- Event wiring ---- */
+/* ---- Event wiring ----
 
 // main card buttons (save/remove)
 mainCardsEl.addEventListener('click', (e) => {
@@ -248,7 +485,7 @@ if (firstImgTab && !document.querySelector('.pc-nav-img.is-active')) {
 }
 
 render();
-/*// --- Initial render ---
+// --- Initial render ---
 if (currentDraw.length === 0) {
     drawThreeRandom();   // or: render();  // <-- use this instead if you prefer showing the Welcome first
 } else {

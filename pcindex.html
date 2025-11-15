@@ -7,7 +7,9 @@
     <!-- Temp fonts: adjust later -->
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/pcstyle.css">
+    <link rel="stylesheet" href="css/pcstyle.css?v=<?= Date.now ?>">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
@@ -20,22 +22,26 @@
             <div class="pc-banner">
                 <div class="pc-paper">
                     <img src="Images/pc_logo.png" alt="PatternChooser" class="pc-logo-img">
-                    <img src="Images/tape_yellow_left_tilt.png" alt="" class="pc-tape" aria-hidden="true">
+                    <img src="Images/tapes/tape_yellow_left_tilt.png" alt="" class="pc-tape" aria-hidden="true">
                 </div>
             </div>
 
             <nav class="pc-nav">
-                <button class="pc-nav-img pc-tab-simple"   data-mode="simple"   aria-label="Simple Draw"></button>
-                <button class="pc-nav-img pc-tab-similar"  data-mode="similar"  aria-label="Similar Patterns"></button>
-                <button class="pc-nav-img pc-tab-contrast" data-mode="contrast" aria-label="Contrast Patterns"></button>
-                <button class="pc-nav-img pc-tab-credits"  data-mode="credits"  aria-label="Credits"></button>
+                <button id="tabSimple" class="pc-nav-img pc-tab-simple"   data-mode="simple"   aria-label="Simple Draw"></button>
+                <button id="tabSimilar" class="pc-nav-img pc-tab-similar"  data-mode="similar"  aria-label="Similar Patterns"></button>
+                <button id="tabContrast" class="pc-nav-img pc-tab-contrast" data-mode="contrast" aria-label="Contrast Patterns"></button>
+                <button id="tabCredits" class="pc-nav-img pc-tab-credits"  data-mode="credits"  aria-label="Credits"></button>
             </nav>
         </header>
 
         <!-- Main content area -->
         <main class="pc-main">
             <div id="emptyState" class="pc-empty" style="display:none;">
-                Welcome! Use <strong>Simple Draw</strong> to pull three patterns. Save any keeper to your <strong>Scrapbook</strong>.
+                Crack open the design binder, kid.<br>
+                Hit <strong>Simple Draw</strong> to deal three fresh patterns from the vault.<br>
+                If you fall in love with one, <i>Add to Scrapbook</i> ▸<br>
+                If you hate one… congratulations, that’s design.<br>
+                No wrong answers — Every pattern is a building block.
             </div>
 
             <section class="pc-main-cards" id="mainCards"></section>
@@ -52,6 +58,6 @@
     </a>
 </div>
 
-<script src="js/pcmain.js"></script>
+<script src="js/pcmain.js?v=<?= Date.now ?>"></script>
 </body>
 </html>

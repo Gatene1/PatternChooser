@@ -1,0 +1,72 @@
+{
+  "buttons": {
+    "mechanic":   { "flip": "Images/buttons/mechanic_blue_flip.png",
+                    "back": "Images/buttons/mechanic_blue_back.png",
+                    "ats":  "Images/buttons/mechanic_blue_ATS.png" },
+    "dynamic":    { "flip": "Images/buttons/dynamic_green_flip.png",
+                    "back": "Images/buttons/dynamic_green_back.png",
+                    "ats":  "Images/buttons/dynamic_green_ATS.png" },
+    "aesthetic":  { "flip": "Images/buttons/aesthetic_violet_flip.png",
+                    "back": "Images/buttons/aesthetic_violet_back.png",
+                    "ats":  "Images/buttons/aesthetic_violet_ATS.png" }
+  },
+  "defaults": {
+    "card_bg": "Images/cards/card_bg.png",
+    "tape": "Images/tapes/tape_yellow_straight.png"
+  },
+  "patterns": [
+    {
+      "id": "risk_vs_reward",
+      "title": "Risk Vs Reward",
+      "category": "mechanic",
+      "tape": "Images/tapes/tape_blue_straight.png",
+      "diagram": "Images/diagrams/risk_vs_reward.png",
+      "front": "A mechanic in which players decide whether a potential reward is worth the potential risk or loss.",
+      "sources": {
+        "first_game": { "title": "Rogue", "year": 1980,
+          "note": "Permadeath and loot tables create constant value tradeoffs." },
+        "notables": [
+          { "title": "Dark Souls", "year": 2011,
+            "note": "Souls as currency: push deeper or bank safely at a bonfire." },
+          { "title": "FTL", "year": 2012,
+            "note": "Risky events vs. resource scarcity in every jump." },
+          { "title": "Spelunky", "year": 2008,
+            "note": "High-value items guarded by lethal layouts and ghost timer." }
+        ]
+      }
+    },
+    {
+       "id": "glass_cannon",
+       "title": "Glass Cannon",
+       "category": "dynamic",
+       "diagram": "Images/diagrams/glassCannon.png",
+       "tape": "Images/tapes/tape_green_straight.png",
+       "front": "A high-damage build that trades durability for destructive power. Great for players who want big highs and don’t mind living dangerously.",
+       "tags": ["tension", "tradeoff", "power"],
+       "sources": {
+           "first_game": {
+           "title": "Final Fantasy",
+           "year": 1987,
+           "note": "Early mages can delete enemies but collapse if anything looks at them funny."
+         }
+       }
+     },
+     {
+       "id": "safe_zone",
+       "title": "Safe Zone",
+       "category": "aesthetic",
+       "diagram": "Images/diagrams/safeZone.png",
+       "tape": "Images/tapes/tape_violet_straight.png",
+       "front": "A peaceful pocket where tension drops and the player can breathe. Safe Zones reset the emotional pace and make danger feel sharper when it returns.",
+       "tags": ["relief", "calm", "pacing", "emotion"],
+       "sources": {
+           "first_game": {
+           "title": "The Legend of Zelda",
+           "year": 1986,
+           "note": "Old man caves offered brief safety from monsters and let players mentally reset."
+         }
+       }
+     }
+    // …one block per pattern
+  ]
+}
