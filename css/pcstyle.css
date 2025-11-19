@@ -14,7 +14,9 @@
     --card-ratio: 735/685;      /* matches your card_bg.png */
     --btn-h: 40px;              /* image button height */
     --face-pad: 10px;           /* tweak me to nudge everything left/right */
+    --pc-main-background: url('../Images/paper_doodles.png') center/1024px auto repeat;
     --pc-banner-width: 100vw;     /* Banner Size */
+    --saved-label-width: 100%    /* Label size */
 }
 
 body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-serif';
@@ -132,7 +134,8 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 .pc-tab-similar  { background-image: url('../Images/tabs/tab_similar.png'); }
 .pc-tab-contrast { background-image: url('../Images/tabs/tab_contrast.png'); }
 .pc-tab-credits  { background-image: url('../Images/tabs/tab_credits.png'); }
-
+/* Simple tab switches to this art when it's just a Deck tab */
+.pc-tab-deck     { background-image: url('../Images/tabs/tab_deck.png'); }
 
 .pc-nav-btn {
     padding: 10px 14px 9px;
@@ -165,19 +168,184 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 }
 /* Main layout */
 /* Keep the 3-column layout inside the sheet */
-.pc-main{ display:grid; grid-template-columns: 1fr 300px; gap: 18px; }
+.pc-main{
+    display:grid;
+    grid-template-columns: 1fr 300px;
+    gap: 18px;
+    position: relative;
+}
+/* Make the welcome state an overlay that doesn't affect layout */
+#emptyState {
+    /*position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 330px;   !* 300px scrapbook + 18px gap + a little padding *!
+    pointer-events: none;*/
+}
+
 .pc-main-cards{
-    display:flex; flex-wrap:wrap; align-content:flex-start; justify-content:flex-start;
+    grid-column: 1 / 2;
+    display:flex;
+    flex-wrap:wrap;
+    gap: 16px;
+    align-content:flex-start;
+    justify-content:flex-start;
 }
 .pc-main-cards:empty{ display:none; }
 
+/* Panels already live in the left column */
+.pc-main-panel {
+    grid-column: 1 / 2;
+}
+
+/* Right column: scrapbook stays on the right, always */
+.pc-saved{
+    grid-column: 2 / 3;
+    width:100%;
+    align-self: flex-start;
+
+}
+
+
+
+
+/* Panels that live in the main column (Similar / Contrast) */
+.pc-main-panel {
+    grid-column: 1 / 2;
+    min-height: 260px;
+    padding: 16px;
+    border-radius: 16px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: repeat;
+    box-shadow: none;/*0 3px 8px rgba(0, 0, 0, 0.18);*/
+    display: none; /* JS will switch this on/off */
+}
+
+/* Soft paper overlay so text and cards are readable on the doodle background */
+.pc-panel-inner {
+    background: rgba(255, 248, 232, 0.5);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+/* Use your new textures */
+.pc-main-panel-similar {
+    background-image: none;
+}
+
+.pc-main-panel-contrast {
+    background-image: none;
+}
+
+/* Card list inside panels */
+.pc-panel-cards {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Panel headings/text */
+.pc-panel-title {
+    font-family: var(--pc-heading-font, system-ui, sans-serif);
+    font-size: 1.2rem;
+    margin: 0 0 4px;
+}
+
+.pc-panel-subtitle {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+
+
+
 .pc-saved{ width:100%; }
-.pc-saved-label{ text-align:right; opacity:.8; margin:0 0 8px; font-family:"Patrick Hand"; }
-.pc-saved-card { position: relative; width: 100%; padding: 8px 8px 6px; margin-bottom: -40px; background: #fffef9;
-    border-radius: 10px; border: 1px solid #d3c5a8; box-shadow: 0 4px 8px rgba(0,0,0,0.18); font-size: 13px;
-    transform-origin: center; }
+.pc-saved-label{ text-align:center; opacity:.8; margin:0 0 8px; font-family:"Patrick Hand"; }
+.pc-saved-card {
+    position: relative;
+    width: var(--saved-label-width);
+    margin: 8px 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.pc-saved-card-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.pc-saved-card-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    font-family: "Patrick Hand", cursive; /* matches buttons & titles */
+    font-size: clamp(14px, 1.9vw, 20px);  /* shrinks on smaller screens */
+    line-height: 1.15;
+    color: #e0e0e0;
+    cursor: pointer;
+
+    /* allow multi-line text and break long words if needed */
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.pc-saved-card-remove {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    border: none;
+    background: transparent;
+    font-family: "Patrick Hand", cursive;
+    font-size: 20px;
+    line-height: 1;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0;
+}
+
+.pc-saved-card-remove:hover {
+    transform: scale(1.1);
+}
+
+
+
+/* Badges showing where a saved card came from */
+.pc-saved-card-badge {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-family: "Patrick Hand", cursive;
+    font-size: 11px;
+    background: #90e0b8; /* Similar = soft green */
+    color: #103322;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+.pc-saved-card-badge.is-contrast {
+    background: #ffb3b3; /* Contrast = soft red */
+    color: #521616;
+}
+
+
+
+
+
+
+
 /* Empty-state message */
 .pc-empty {
+    grid-column: 1 / 2;      /* <-- PUT THIS BACK HERE */
     font-family:"Kalam", cursive;
     font-size: 18px;
     opacity: 0.8;
@@ -187,6 +355,9 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
     border-radius: 12px;
     margin:12px;
 }
+
+
+
 /* slight fanned look via data-index if you want later */
 /* Add one of these classes to any .pc-nav-btn to recolor */
 .pc-tab-blue  { background: linear-gradient(#e8f2ff, #cfe5ff); border-color:#a9bada; }
@@ -242,10 +413,73 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
     pointer-events: none;       /* never intercept clicks */
 }
 
+
+
+.pc-card-close {
+    position: absolute;
+    top: -24px;               /* sits on top of the tape */
+    left: 100%;
+    transform: translateX(-50%);
+    z-index: 4;               /* above tape */
+
+    border: none;
+    background: transparent;
+    padding: 0;
+
+    font-family: "Patrick Hand", cursive;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+    color: #ffffff;
+
+    /* DARKER, STRONGER SHADOW */
+    text-shadow:
+            0 0 4px rgba(0,0,0,0.9),
+            0 0 10px rgba(0,0,0,0.8),
+            1px 1px 3px rgba(0,0,0,0.75);
+    cursor: pointer;
+}
+
+.pc-card-close:hover {
+    transform: translateX(-50%) scale(1.1);
+}
+
+.pc-card {
+    position: relative;
+    width: var(--card-w);
+    aspect-ratio: var(--card-ratio);
+    height: auto;
+    margin: 12px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: 0 8px 14px rgba(0,0,0,.12);
+    perspective: 1000px;
+    cursor: pointer; /* so it feels clickable */
+}
+
+/* Selected state */
+.pc-card.is-selected::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 6px;
+    border: 3px solid #fff7b0;
+    box-shadow:
+            0 0 0 3px rgba(255, 165, 0, 0.85),
+            0 10px 18px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.pc-card.is-selected {
+    transform: translateY(-4px);
+}
+
+
+
 /* Full scrapbook sheet sitting on the desk */
 /* Scrapbook sheet */
 .pc-canvas {
-    background: url('../Images/paper_doodles.png') center/1024px auto repeat;
+    background: var(--pc-main-background);
     border-radius: 16px;
     padding: clamp(14px, 2.2vw, 24px);
     box-shadow: 0 10px 28px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(0,0,0,0.08);
@@ -339,8 +573,23 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
     font-size: clamp(16px, calc(var(--card-w)/26), 22px);
     line-height: 1.35; color:#2c2c2c; margin: 4px 0 10px;
 }
+.pc-card-body strong {
+    font-weight: 700;
+}
+
+.pc-card-body br + strong {
+    display: inline-block;
+    margin-top: 6px;
+}
+
 .pc-card-fig{ margin:-30px 0 10px; padding:15px; border:0; background:transparent; }
 .pc-card-img{ display:block; width:50%; height:auto; margin: auto; }
+
+/* Press and Hold diagram runs a bit tall, so trim it down a bit */
+.pc-card-img-press-hold {
+    width: 36%;
+}
+
 
 /* Button strip INSIDE the card */
 .pc-card-tape{
@@ -359,6 +608,34 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
     justify-content: flex-start; /* ⟵ makes them sit left */
     gap: 10px;
 }
+
+.pc-card-label {
+    display: inline-block;
+
+    /* Let it expand but stop before full width */
+    max-width: 90%;       /* Or 100% if inside a padded container */
+    width: auto;
+
+    /* Allow multiline */
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+
+    /* Padding for multi-line comfort */
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    /* Keep the × in the corner aligned */
+    position: relative;
+}
+
+.pc-card-label .delete-btn {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+}
+
+
 .pc-imgbtn{ border:0; padding:0; background:transparent; cursor:pointer; }
 .pc-imgbtn>img{ display:block; height: var(--btn-h); }
 
@@ -405,6 +682,35 @@ body.modal-open{ overflow:hidden; }
 
 
 
+/* Tiny toast message for feedback (no blocking alert boxes) */
+.pc-toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fffef0;
+    font-family: "Patrick Hand", cursive;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 5000;
+}
+
+.pc-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+
+
+
 
 
 
@@ -412,13 +718,19 @@ body.modal-open{ overflow:hidden; }
 /* Responsiveness */
 
 @media (max-width: 900px) {
-    .pc-main { grid-template-columns: 1fr; }
-    .pc-saved { order: 2; }
-    .pc-main-cards { order: 1; flex-wrap: wrap; }
+    /* Keep two columns; just let the grid squeeze naturally */
+    .pc-main {
+        grid-template-columns: minmax(0, 1fr) 260px;
+        gap: 12px;
+    }
+
     :root {
         --tab-scale: 0.55;
         --tab-overlap: 0.9;
     }
+
+    /* Scrapbook + cards keep their default positions; no reordering */
+    .pc-main-cards { flex-wrap: wrap; }
 }
 
 /* Mobile: reduce overlap a bit so tabs don't crowd */
@@ -438,25 +750,28 @@ body.modal-open{ overflow:hidden; }
 
 /* Desktop stays two columns. On portrait/phone: single column, cards vertical */
 @media (max-width: 680px) {
-    :root{ --card-w: 92vw; }    /* reuse your CSS var if present */
+    :root{ --card-w: 92vw;
+           --saved-label-width: 75%;
+    }
     .pc-empty {
         font-size: 15px;
         padding: 12px;
         line-height: 1.4;
     }
 
-    /* Stack main area nicely */
+    /* Keep two columns even on small screens */
     .pc-main {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) 240px;
     }
 
     .pc-main-cards {
         flex-direction: column;
-        align-items: center;  /* center cards in the column */
+        align-items: flex-start;  /* cards can still stack inside their column */
     }
 
+    /* Don’t reorder scrapbook */
     .pc-saved {
-        order: 2;             /* Scrapbook below cards on mobile */
+        order: 0;
     }
 }
 
@@ -469,6 +784,7 @@ body.modal-open{ overflow:hidden; }
         --tab-scale: 0.45;
         --tab-overlap: 0.9;
         --pc-banner-width: 75vw;
+        --saved-label-width: 100%;
     }
     .pc-empty {
         font-size: 12px;

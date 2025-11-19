@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/pcstyle.css?v=<?= Date.now ?>">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -46,8 +49,24 @@
 
             <section class="pc-main-cards" id="mainCards"></section>
 
+
+            <!-- Similar Patterns panel -->
+            <section class="pc-main-panel pc-main-panel-similar" id="similarPanel" hidden>
+                <div class="pc-panel-inner">
+                    <!-- Content is injected by JS -->
+                </div>
+            </section>
+
+            <!-- Contrasting Patterns panel -->
+            <section class="pc-main-panel pc-main-panel-contrast" id="contrastPanel" hidden>
+                <div class="pc-panel-inner">
+                    <!-- Content is injected by JS -->
+                </div>
+            </section>
+
+
             <aside class="pc-saved" id="savedStack">
-                <h3 class="pc-saved-label">Scrapbook</h3>
+                <h3 class="pc-saved-label"></h3>
             </aside>
         </main>
     </section>
@@ -58,6 +77,28 @@
     </a>
 </div>
 
+<script>
+    window.onerror = function (msg, src, line, col, err) {
+        const pre = document.createElement('pre');
+        pre.style.position = 'fixed';
+        pre.style.top = '10px';
+        pre.style.left = '10px';
+        pre.style.right = '10px';
+        pre.style.zIndex = '9999';
+        pre.style.background = '#fff';
+        pre.style.border = '1px solid #000';
+        pre.style.padding = '10px';
+        pre.style.fontFamily = 'monospace';
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.textContent = 'JS Error:\n' + msg + '\n' +
+            'Source: ' + src + '\n' +
+            'Line: ' + line + ', Col: ' + col;
+        document.body.innerHTML = '';
+        document.body.appendChild(pre);
+    };
+</script>
+
 <script src="js/pcmain.js?v=<?= Date.now ?>"></script>
+<script src="js/helpers.js?v=<?= Date.now ?>"></script>
 </body>
 </html>

@@ -1,0 +1,80 @@
+Already
+
+🎴 34 Patterns + Descriptions (PatternChooser-Ready)
+🎮 Core Interaction & Control
+
+Hold-to-Charge — Holding an input gradually powers an attack or action, releasing at the player’s chosen timing.
+
+Dual-Mode Input — A single button that performs two distinct actions depending on context or duration.
+
+Tap Rhythm Recognition — The game responds to patterned tapping (e.g., quick taps vs steady rhythm).
+
+Directional Quick-Swap — Players instantly switch tools/weapons by flicking toward a direction.
+
+Toggle State Mechanic — Player switches between two distinct modes, each with strengths/weaknesses.
+
+Context-Sensitive Actions — Buttons dynamically change function based on nearby objects or states.
+
+One-Way Movement Constraint — Moving past a point locks the player out of returning the same way.
+
+Interruptible Actions — Actions can be canceled mid-animation to adapt on the fly.
+
+🧠 Strategy & Decision-Making
+
+Risk–Reward Tradeoff — Taking a risk yields better rewards, but failure stings harder.
+
+Tempo Management — Players must match or manipulate the pace of actions or enemy cycles.
+
+Resource Attrition — Resources slowly tick down over time, increasing long-term pressure.
+
+Deferred Choice — The player chooses later, with consequences growing the longer they wait.
+
+Stacking Buffs — Effects build on top of each other to escalate power or synergy.
+
+Soft Failure State — The player isn’t “dead,” but is heavily weakened or disadvantaged.
+
+Priority Targeting — Choosing which enemy or object to handle first determines success.
+
+Escalating Stakes — Each round/action raises the intensity or consequences of failure.
+
+🌍 Spatial Patterns & Navigation
+
+Choke Point — A narrow space forces tension, restricting movement and options.
+
+Vision Obstruction — The player’s sight is partially blocked or limited to a radius or direction.
+
+Lock-and-Key Puzzle — Progress is gated until a specific item, action, or condition is met.
+
+Navigational Loop — A route circles back into itself, helping (or confusing) player orientation.
+
+Backtracking Shortcut — New paths open to make returning faster or safer.
+
+Multi-Path Layout — Several routes lead to the same destination, each with tradeoffs.
+
+Hidden Passage — A concealed path rewards exploration or experimentation.
+
+Forced Perspective Alignment — Geometry only lines up (or becomes traversable) when viewed a certain way.
+
+⚙️ Systems & Economy
+
+Conversion Economy — Turning one resource type into another is the core management puzzle.
+
+Cooldown Economy — Abilities revolve around timed recharge rather than expendable items.
+
+Synergy Amplifier — Combining certain items/skills produces effects stronger than their sum.
+
+Chain Reaction System — One action triggers a cascade of automatic events.
+
+Upkeep Cost Mechanic — Using or maintaining something drains resources continuously.
+
+Diminishing Returns — Repeating an action becomes less effective over time.
+
+👾 Challenge & Encounter Design
+
+Telegraphed Attack Pattern — Enemy wind-ups broadcast incoming danger, rewarding timing.
+
+Mob Pressure Curve — Difficulty scales through increasing enemy count, not strength.
+
+Predictive Enemy Behavior — Enemies respond to player habits, not just fixed patterns.
+
+Boss Phase Shift — A boss shifts behaviors or mechanics mid-fight at HP thresholds.

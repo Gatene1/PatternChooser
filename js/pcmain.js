@@ -17,6 +17,65 @@ const els = {
     modal: null
 };
 
+
+
+
+// Panels for Similar / Contrast views
+const panels = {
+    similar: document.getElementById('similarPanel'),
+    contrast: document.getElementById('contrastPanel')
+};
+
+// Track which main view is active: 'simple' | 'similar' | 'contrast'
+let currentMode = 'simple';
+
+
+function updateSimpleTabAppearance() {
+    const btn = tabs.simple;
+    if (!btn) return;
+
+    if (currentMode === 'simple') {
+        // In Simple mode, this is "Simple Draw"
+        btn.classList.add('pc-tab-simple');
+        btn.classList.remove('pc-tab-deck');
+        btn.setAttribute('aria-label', 'Simple Draw');
+    } else {
+        // In Similar / Contrast modes, this becomes "Deck"
+        btn.classList.remove('pc-tab-simple');
+        btn.classList.add('pc-tab-deck');
+        btn.setAttribute('aria-label', 'Deck');
+    }
+}
+
+
+
+// Lightweight toast for "Added to Scrapbook" etc.
+let toastTimeout = null;
+function showToast(message) {
+    let toast = document.getElementById('pc-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'pc-toast';
+        toast.className = 'pc-toast';
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('is-visible');
+    }, 1500);
+}
+
+
+
+
+
 // Example pool – expand as you like.
 const patterns = [
     { id: 'risk_reward', name: 'Risk & Reward', tags: ['tension','stakes'] },
@@ -32,6 +91,8 @@ const patterns = [
 const mainCardsEl  = document.getElementById('mainCards');
 const savedStackEl = document.getElementById('savedStack');
 const emptyStateEl = document.getElementById('emptyState');
+const pcLogoImg = document.getElementsByClassName('pc-logo-img');
+const pcTape = document.getElementsByClassName('pc-tape');
 
 // --- Storage keys & helpers ---
 const KEYS = {
@@ -39,24 +100,16 @@ const KEYS = {
     saved:       'pc_saved_cards'
 };
 
+const CATEGORY_LABEL_IMAGES = {
+    progression: 'Images/cards/progression_orange_blank.png',
+    aesthetic:   'Images/cards/aesthetic_violet_blank.png',
+    dynamic:     'Images/cards/dynamic_green_blank.png',
+    mechanic:    'Images/cards/mechanic_blue_blank.png'
+};
+
+const maxNumOfCards = 8;
+
 let manifest, defaults, buttonsByCat;
-
-// util: fetch + allow // comments in JSON
-async function loadManifest(path) {
-    const raw = await fetch(path).then(r => r.text());
-    const noComments = raw.split('\n').filter(l => !l.trim().startsWith('//')).join('\n');
-    return JSON.parse(noComments);
-}
-
-// filename fallback helper (handles risk_vs_reward vs riskVsReward)
-function tryPaths(p) {
-    const tried = [p];
-    if (p.includes('_')) tried.push(p.replace(/_([a-z])/g, (_,c)=>c.toUpperCase()));
-    return tried;
-}
-
-
-
 
 
 function imgBtn(src, alt, onClick) {
@@ -84,13 +137,20 @@ function makeFront(p, catBtns) {
     const fig = document.createElement('figure');
     fig.className = 'pc-card-fig';
     const img = document.createElement('img');
-    // resolve diagram path w/ fallback
+// resolve diagram path w/ fallback
     const diagramPaths = tryPaths(p.diagram);
     img.src = diagramPaths[0];
     img.onerror = () => { if (diagramPaths[1]) img.src = diagramPaths[1]; };
     img.alt = `${p.title} diagram`;
     img.className = 'pc-card-img';
+
+// Special-case Press and Hold so the diagram fits better
+    if (p.id === 'press_and_hold') {
+        img.classList.add('pc-card-img-press-hold');
+    }
+
     fig.appendChild(img);
+
 
     const actions = document.createElement('div');
     actions.className = 'pc-card-actions';
@@ -112,11 +172,33 @@ function makeBack(p, catBtns) {
     const body = document.createElement('div');
     body.className = 'pc-card-body';
 
-    // Show ONLY the first recorded game (short + readable)
+    const chunks = [];
+
+    // First noted game (existing behavior)
     const fg = p.sources?.first_game;
     if (fg) {
-        body.innerHTML = `<strong>First noted:</strong> ${fg.title} (${fg.year}) — ${fg.note}`;
+        chunks.push(
+            `<strong>First noted:</strong> ${fg.title} (${fg.year}) — ${fg.note}`
+        );
     }
+
+    // New: games that feature this pattern
+    if (Array.isArray(p.games) && p.games.length) {
+        const listed = p.games
+            .map(g => `• ${g}`)
+            .join('<br>');
+
+        chunks.push(
+            `<strong>Featured In:</strong><br>${listed}`
+        );
+    }
+
+    // Fallback if we somehow have neither
+    if (!chunks.length) {
+        chunks.push('No notes recorded yet. This pattern is waiting for its first spotlight.');
+    }
+
+    body.innerHTML = chunks.join('<br><br>');
 
     const actions = document.createElement('div');
     actions.className = 'pc-card-actions';
@@ -126,16 +208,64 @@ function makeBack(p, catBtns) {
     return face;
 }
 
-function makeCard(p) {
+
+function makeCard(p, options = {}) {
+    const context = options.context || 'deck'; // 'deck' or 'panel'
     const card = document.createElement('article');
     card.className = 'pc-card';
+
+    if (p.id != null) {
+        card.dataset.patternId = String(p.id);
+    } else if (p.title) {
+        card.dataset.patternId = String(p.title);
+    }
+
+    // Re-apply selected state when re-rendering
+    const thisId = card.dataset.patternId;
+    if (thisId && typeof selectedPatternId !== 'undefined' && selectedPatternId === thisId) {
+        card.classList.add('is-selected');
+    }
 
     // tape
     const tape = document.createElement('img');
     tape.className = 'pc-card-tape';
     tape.src = p.tape || defaults.tape;
-    tape.alt = ''; tape.ariaHidden = 'true';
+    tape.alt = '';
+    tape.ariaHidden = 'true';
     card.appendChild(tape);
+
+    // NEW: close (X) button sitting on the tape
+    if (context === 'deck') {
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'pc-card-close';
+        closeBtn.setAttribute('aria-label', 'Remove this card');
+        closeBtn.textContent = 'X';
+
+        closeBtn.addEventListener('click', (evt) => {
+            evt.stopPropagation();   // don’t trigger flips or other events
+
+            const id = p && (p.id ?? p.title);
+            if (!id) return;
+
+            const sid = String(id);
+
+            if (typeof selectedPatternId !== 'undefined' && selectedPatternId === sid) {
+                selectedPatternId = null;
+            }
+
+            currentDraw = currentDraw.filter(q => {
+                const qid = q && (q.id ?? q.title);
+                return String(qid) !== sid;
+            });
+
+            persistCurrentDraw();
+            renderDeck();
+        });
+
+        card.appendChild(closeBtn);
+    }
+
 
     // flip core
     const inner = document.createElement('div');
@@ -159,25 +289,49 @@ function makeCard(p) {
     atsBtnFront.addEventListener('click', add);
     //atsBtnBack .addEventListener('click', add);
 
+
+    // --- Card selection (for Similar / Contrast modes) ---
+    if (context === "deck") {
+        card.addEventListener('click', (evt) => {
+            // Ignore clicks on the Flip/Add/X buttons
+            if (evt.target.closest('.pc-imgbtn') || evt.target.closest('.pc-card-close')) {
+                return;
+            }
+
+            const id = card.dataset.patternId;
+            if (!id) return;
+
+            // If already selected, unselect
+            if (selectedPatternId === id) {
+                selectedPatternId = null;
+                card.classList.remove('is-selected');
+                return;
+            }
+
+            // Otherwise, select this one and clear others
+            selectedPatternId = id;
+
+            document.querySelectorAll('.pc-card.is-selected').forEach(el => {
+                if (el !== card) {
+                    el.classList.remove('is-selected');
+                }
+            });
+
+            // Mark this card as selected
+            card.classList.add('is-selected');
+
+            if (context === 'panel') {
+                card.style.cursor = 'default';
+            }
+
+            // Update Similar / Contrast views if one is open
+            updateSimilarAndContrastPanels();
+        });
+    }
+
     return card;
 }
 
-function addToSaved(p) {
-    const item = document.createElement('div');
-    item.style.margin = '8px 0';
-    item.textContent = p.title;
-    els.saved.appendChild(item);
-}
-
-/*async function boot() {
-    manifest = await loadManifest('Images/patterns.json');
-    defaults = manifest.defaults || {};
-    buttonsByCat = manifest.buttons || {};
-    // deal the first 3
-    manifest.patterns.slice(0,3).forEach(p => {
-        els.deck.appendChild(makeCard(p));
-    });
-}*/
 
 
 // ===== states =====
@@ -187,40 +341,311 @@ function showWelcome(){
 }
 
 function onSimpleDraw(){
+    if (currentDraw.length >= maxNumOfCards) {
+        alert("You can only have up to " + maxNumOfCards + " game design patterns out at one time.");
+        return;
+    }
+
     els.empty.style.display = 'none';
-    clearDeck();
-    deal(3);
+
+    const newCards = drawRandomPatterns(3);
+
+    // If we’re out of room or no available cards, just keep whatever’s there
+    if (!newCards.length) {
+        return;
+    }
+
+    // Track what’s already in the deck by id/title
+    const idsInDraw = new Set(
+        currentDraw.map(c => String(c.id ?? c.title))
+    );
+
+
+    for (let i = 0; i < newCards.length; i++) {
+        const actualCardDraw = newCards[i];
+        const thisId = String(actualCardDraw.id ?? actualCardDraw.title);
+
+        // 2) Stop once we hit the limit
+        if (currentDraw.length >= maxNumOfCards) {
+            break;
+        }
+
+        // 1) Skip duplicates
+        if (idsInDraw.has(thisId) || savedSet.has(thisId)) {
+            newCards[i] = getOneRandomPattern();
+            i--;
+            continue;
+        }
+
+        // CENTRALIZED: only push if rules pass
+        if (addCardToDeck(actualCardDraw)) {
+            idsInDraw.add(thisId);
+        }
+    }
+
+    persistCurrentDraw();
+    renderDeck();
 }
 
-function clearDeck(){
-    els.deck.innerHTML = '';
-}
 
 // ===== dealing =====
+// kept for future modes (similar / contrast)
 function deal(n){
-    manifest.patterns.slice(0,n).forEach(p=>{
-        els.deck.appendChild(makeCard(p));
+    const poolSource = (manifest && Array.isArray(manifest.patterns))
+        ? manifest.patterns
+        : [];
+    currentDraw = poolSource.slice(0, n);
+    persistCurrentDraw();
+    renderDeck();
+}
+
+
+document.addEventListener('DOMContentLoaded', boot);
+
+// Click handler on scrapbook for removal
+els.saved.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pc-saved-card-remove');
+    if (!btn) return;
+    const card = btn.closest('.pc-saved-card');
+    if (!card) return;
+    const id = card.dataset.patternId;
+    removeFromSaved(id);
+});
+
+
+
+function setMode(mode) {
+    currentMode = mode;
+
+    // Button highlighting
+    Object.values(tabs).forEach(btn => {
+        if (!btn) return;
+        btn.classList.remove('is-active');
+    });
+
+    if (mode === 'simple' && tabs.simple) {
+        tabs.simple.classList.add('is-active');
+    } else if (mode === 'similar' && tabs.similar) {
+        tabs.similar.classList.add('is-active');
+    } else if (mode === 'contrast' && tabs.contrast) {
+        tabs.contrast.classList.add('is-active');
+    }
+
+    // Section visibility
+    if (mode === 'simple') {
+        // Deck on, panels off
+        els.empty.style.display = currentDraw.length ? 'none' : '';
+        els.deck.style.display = 'flex';
+
+        if (panels.similar) {
+            panels.similar.style.display = 'none';
+            panels.similar.hidden = true;
+        }
+        if (panels.contrast) {
+            panels.contrast.style.display = 'none';
+            panels.contrast.hidden = true;
+        }
+    } else {
+        // Deck off, both panels off, then switch the one we care about on
+        els.empty.style.display = 'none';
+        els.deck.style.display = 'none';
+
+        ['similar', 'contrast'].forEach(key => {
+            const panel = panels[key];
+            if (!panel) return;
+            panel.style.display = 'none';
+            panel.hidden = true;
+        });
+
+        const activePanel = panels[mode];
+        if (activePanel) {
+            activePanel.style.display = 'block';
+            activePanel.hidden = false;
+        }
+
+        renderRelationPanel(mode);
+    }
+    // Update Simple/Deck tab art + label based on mode
+    updateSimpleTabAppearance();
+}
+
+function getSelectedPattern() {
+    if (!selectedPatternId) return null;
+    return getPatternById(selectedPatternId);
+}
+
+function findSimilarPatterns(base) {
+    if (!base || !manifest || !manifest.patterns) return [];
+    const baseTags = new Set((base.tags || []).map(String));
+
+    return manifest.patterns.filter(p => {
+        if (p === base) return false;
+        const tags = (p.tags || []).map(String);
+        return tags.some(t => baseTags.has(t));
     });
 }
 
-document.addEventListener('DOMContentLoaded', boot);
+function findContrastPatterns(base) {
+    if (!base || !manifest || !manifest.patterns) return [];
+    const baseTags = new Set((base.tags || []).map(String));
+
+    return manifest.patterns.filter(p => {
+        if (p === base) return false;
+        const tags = (p.tags || []).map(String);
+
+        // If either side has no tags, treat as "wildcard contrast"
+        if (!tags.length || !baseTags.size) {
+            return true;
+        }
+        // Contrast = no overlapping tags
+        return !tags.some(t => baseTags.has(t));
+    });
+}
+
+function renderRelationPanel(mode) {
+    const panelKey = mode === 'contrast' ? 'contrast' : 'similar';
+    const panel = panels[panelKey];
+    if (!panel) return;
+
+    const inner = panel.querySelector('.pc-panel-inner');
+    if (!inner) return;
+
+    inner.innerHTML = '';
+
+    const base = getSelectedPattern();
+
+    const title = document.createElement('h2');
+    title.className = 'pc-panel-title';
+    title.textContent = panelKey === 'similar'
+        ? 'Similar Patterns'
+        : 'Contrasting Patterns';
+
+    const subtitle = document.createElement('p');
+    subtitle.className = 'pc-panel-subtitle';
+
+    if (!base) {
+        subtitle.textContent = 'Select a pattern from the Deck or Scrapbook to see related suggestions.';
+        inner.append(title, subtitle);
+        return;
+    }
+
+    subtitle.textContent = `${base.title || base.name || 'Selected pattern'} (${base.category || 'Uncategorized'})`;
+
+    const list = document.createElement('div');
+    list.className = 'pc-panel-cards';
+
+    const pool = panelKey === 'similar'
+        ? findSimilarPatterns(base)
+        : findContrastPatterns(base);
+
+    if (!pool.length) {
+        const msg = document.createElement('p');
+        msg.textContent = 'No matches found in the current manifest. Try another pattern.';
+        inner.append(title, subtitle, msg);
+        return;
+    }
+
+    pool.forEach(p => {
+        const card = makeCard(p, { context: 'panel' });
+        if (p.id != null) {
+            card.dataset.patternId = String(p.id);
+        } else if (p.title) {
+            card.dataset.patternId = String(p.title);
+        }
+        list.appendChild(card);
+    });
+
+    inner.append(title, subtitle, list);
+}
+
+// Called after any card selection change
+function updateSimilarAndContrastPanels() {
+    if (currentMode === 'similar' || currentMode === 'contrast') {
+        renderRelationPanel(currentMode);
+    }
+}
+
+
+
+
 
 async function boot() {
     manifest = await loadManifest('Images/patterns.json');
     defaults = manifest.defaults || {};
     buttonsByCat = manifest.buttons || {};
 
-    // Start in welcome state
+    // Always start fresh
+    currentDraw = [];
+    savedSet = new Set();
+
     showWelcome();
+    renderSaved(); // harmless but consistent
 
-    // Wire tabs
-    tabs.simple?.addEventListener('click', (e)=>{ e.preventDefault(); onSimpleDraw(); });
-    tabs.credits?.addEventListener('click',(e)=>{ e.preventDefault(); openCredits(); });
+    // --- Initial state ---
+    setMode('simple'); // deck mode is the starting mode
 
-    // (Optional) keep placeholders for future:
-    tabs.similar?.addEventListener('click',(e)=>e.preventDefault());
-    tabs.contrast?.addEventListener('click',(e)=>e.preventDefault());
+    // --- Tab wiring ---
+
+    // SIMPLE DRAW TAB
+    // SIMPLE / DECK TAB
+    tabs.simple?.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Whenever we land back on Deck, restore the main scrapbook look
+        document.documentElement.style.setProperty(
+            '--pc-main-background',
+            'url(\'../Images/paper_doodles.png\') center/1024px auto repeat'
+        );
+        pcLogoImg[0].setAttribute('src', 'Images/pc_logo.png');
+        pcTape[0].setAttribute('src', 'Images/tapes/tape_yellow_left_tilt.png');
+
+        if (currentMode === 'simple') {
+            // In Simple mode, this tab is "Simple Draw" → actually deal 3 cards
+            setMode('simple');   // ensure highlighting is correct
+            onSimpleDraw();
+        } else {
+            // In Similar / Contrast modes, this tab is "Deck"
+            // → just go back to the Deck view, no new draw
+            setMode('simple');
+
+            // If there are no cards yet, let the welcome text show
+            els.empty.style.display = currentDraw.length ? 'none' : '';
+        }
+    });
+
+
+    // SIMILAR TAB
+    tabs.similar?.addEventListener('click', (e)=>{
+        e.preventDefault();
+        setMode('similar');
+        document.documentElement.style.setProperty('--pc-main-background',
+            'url(\'../Images/similar_patterns_bg.png\') center/1024px auto repeat');
+        pcLogoImg[0].setAttribute('src', 'Images/sp_logo.png');
+        pcTape[0].setAttribute('src', 'Images/tapes/tape_blue_straight.png');
+        // panel auto-renders based on selectedPatternId
+        updateSimilarAndContrastPanels();
+    });
+
+    // CONTRAST TAB
+    tabs.contrast?.addEventListener('click', (e)=>{
+        e.preventDefault();
+        setMode('contrast');
+        document.documentElement.style.setProperty('--pc-main-background',
+            'url(\'../Images/contrasting_patterns_bg.png\') center/1024px auto repeat');
+        pcLogoImg[0].setAttribute('src', 'Images/contp_logo.png');
+        pcTape[0].setAttribute('src', 'Images/tapes/tape_orange_straight.png');
+        updateSimilarAndContrastPanels();
+    });
+
+    // CREDITS TAB
+    tabs.credits?.addEventListener('click',(e)=>{
+        e.preventDefault();
+        openCredits();
+    });
 }
+
+
+
 
 function openCredits(){
     if(!els.modal){
@@ -258,237 +683,117 @@ function closeCredits(){
     els.modal?.classList.remove('is-open');
 }
 
-/*
-/* ---- Always start fresh on page load ----
-localStorage.removeItem(KEYS.currentDraw);
-localStorage.removeItem(KEYS.saved);
+function getSavedLabelImage(p) {
+    const cat = (p.category || '').toLowerCase();
+    return CATEGORY_LABEL_IMAGES[cat] || CATEGORY_LABEL_IMAGES.progression;
+}
 
+// ===== Memory & state management =====
 
-
-let currentDraw = loadJSON(KEYS.currentDraw, []);
-let savedCards  = loadJSON(KEYS.saved, [])
-    .filter(Boolean)
-    .map(x => (x && typeof x === 'object' ? x.id : String(x)));  // always coerce to string ids
-
+let currentDraw = [];        // patterns currently on the left
+let savedSet    = new Set(); // pattern ids currently in the scrapbook
+// Tracks where a pattern was added from: 'simple' | 'similar' | 'contrast'
+let savedOrigins = {};
 
 function loadJSON(key, fallback) {
-    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-    catch { return fallback; }
+    try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+    } catch (e) {
+        return fallback;
+    }
 }
+
 function saveJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        // localStorage may be unavailable; ignore
+    }
 }
 
-// Keep a Set in memory to enforce uniqueness
-let savedSet = new Set(savedCards);
+function hydrateState() {
+    // restore current draw from ids
+    const currentIds = loadJSON(KEYS.currentDraw, []);
+    currentDraw = Array.isArray(currentIds)
+        ? currentIds.map(getPatternById).filter(Boolean)
+        : [];
 
-// Persist helper (always writes the Set → array)
-function persistSaved() {
-    savedCards = Array.from(savedSet);
-    saveJSON(KEYS.saved, savedCards);
-}
-
-function setEmptyStateVisible(isVisible) {
-    emptyStateEl.style.display = isVisible ? 'block' : 'none';
-}
-
-
-
-
-// Normalize & dedupe once on load (handles strings vs objects, stale entries)
-function normalizeSaved() {
-    savedCards = Array.from(
-        new Set(
-            savedCards
-                .map(x => (x && typeof x === 'object' ? x.id : x)) // coerce to id string
+    // restore saved scrapbook ids
+    const savedIds = loadJSON(KEYS.saved, []);
+    if (Array.isArray(savedIds)) {
+        savedSet = new Set(
+            savedIds
+                .map(id => String(id))
                 .filter(Boolean)
-        )
-    );
-    saveJSON(KEYS.saved, savedCards);
-}
-normalizeSaved();
-
-
-function render() {
-    // main cards
-    mainCardsEl.innerHTML = '';
-    if (currentDraw.length === 0) {
-        setEmptyStateVisible(true);
+        );
     } else {
-        setEmptyStateVisible(false);
-        currentDraw.slice(0,3).forEach(p => {
-            const card = document.createElement('article');
-            card.className = 'pc-card';
-            card.dataset.patternId = p.id;
-            card.innerHTML = `
-        <h2 class="pc-card-title">${p.name}</h2>
-        <p class="pc-card-notes">Short note about how this pattern shapes your game.</p>
-        <div class="pc-card-actions">
-          <button class="pc-btn pc-btn-ghost" data-action="remove">Remove</button>
-          <button class="pc-btn pc-btn-primary" data-action="save">Add to Scrapbook →</button>
-        </div>`;
-            mainCardsEl.appendChild(card);
-        });
+        savedSet = new Set();
     }
+}
 
-    // saved stack (rebuild from Set every time)
-    const old = savedStackEl.querySelectorAll('.pc-saved-card');
-    old.forEach(n => n.remove());
-    Array.from(savedSet).forEach((id, idx) => {
-        const p = patterns.find(x => x.id === id);
+function persistCurrentDraw() {
+    /*const ids = currentDraw
+        .map(p => p && (p.id ?? p.title))
+        .filter(Boolean)
+        .map(String);
+    saveJSON(KEYS.currentDraw, ids);*/
+}
+
+function persistSaved() {
+    /*const ids = Array.from(savedSet);
+    saveJSON(KEYS.saved, ids);*/
+}
+
+// Deck rendering (left side)
+
+
+function getCurrentUsedCount() {
+    // Unique ids of everything currently “in play”
+    const ids = new Set(savedSet);
+    currentDraw.forEach(p => {
         if (!p) return;
-        const saved = document.createElement('div');
-        saved.className = 'pc-saved-card';
-        saved.dataset.savedId = id;
-        saved.style.marginBottom = idx === savedSet.size - 1 ? '-12px' : '-40px';
-        saved.textContent = p.name;
-        savedStackEl.appendChild(saved);
+        const id = p.id ?? p.title;
+        if (id != null) ids.add(String(id));
     });
+    return ids.size;
 }
 
-function drawThreeRandom() {
-    const shuffled = [...patterns].sort(() => Math.random() - 0.5);
-    currentDraw = shuffled.slice(0,3);
-    saveJSON(KEYS.currentDraw, currentDraw);
-    render();
-}
 
-function addToScrapbook(patternId) {
-    const id = String(patternId);
-    if (!savedSet.has(id)) {
-        savedSet.add(id);
-        persistSaved();
+// Random draw helper for Simple Draw
+function drawRandomPatterns(n) {
+    const poolSource = (manifest && Array.isArray(manifest.patterns))
+        ? manifest.patterns
+        : [];
+
+    if (!poolSource.length) return [];
+
+    // Don’t redraw anything that’s already in the deck or saved
+    const usedIds = new Set();
+    currentDraw.forEach(p => {
+        if (!p) return;
+        const id = p.id ?? p.title;
+        if (id != null) usedIds.add(String(id));
+    });
+    savedSet.forEach(id => usedIds.add(String(id)));
+
+    const available = poolSource.filter(p => {
+        const id = p && (p.id ?? p.title);
+        if (id == null) return false;
+        return !usedIds.has(String(id));
+    });
+
+    if (!available.length) {
+        return [];
     }
-    // Remove card from current draw
-    currentDraw = currentDraw.filter(p => p.id !== id);
-    saveJSON(KEYS.currentDraw, currentDraw);
-    render();
-}
 
-function removeMainCard(cardEl) {
-    const id = cardEl.dataset.patternId;
-    currentDraw = currentDraw.filter(p => p.id !== id);
-    saveJSON(KEYS.currentDraw, currentDraw);
-    render();
-}
-
-function overlapCount(a, b) {
-    const s = new Set(a);
-    return b.reduce((n, t) => n + (s.has(t) ? 1 : 0), 0);
-}
-
-function chooseSeed() {
-    // prefer the first saved card; fall back to first current card; otherwise null
-    if (savedCards.length) {
-        const p = patterns.find(x => x.id === savedCards[0]);
-        if (p) return p;
+    // Shuffle
+    const pool = [...available];
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    return currentDraw[0] || null;
+
+    const target = Math.min(n, pool.length);
+    return pool.slice(0, target);
 }
-
-function similarDraw() {
-    const seed = chooseSeed();
-    if (!seed) { drawThreeRandom(); return; }
-
-    const ranked = patterns
-        .filter(p => p.id !== seed.id)
-        .map(p => ({ p, score: overlapCount(seed.tags, p.tags) }))
-        .sort((a,b) => b.score - a.score);
-
-    currentDraw = ranked.slice(0,3).map(x => x.p);
-    saveJSON(KEYS.currentDraw, currentDraw);
-    render();
-}
-
-function contrastDraw() {
-    const seed = chooseSeed();
-    if (!seed) { drawThreeRandom(); return; }
-
-    // “Contrast” = fewest overlapping tags (and prefer those that introduce brand-new tags)
-    const ranked = patterns
-        .filter(p => p.id !== seed.id)
-        .map(p => ({
-            p,
-            overlap: overlapCount(seed.tags, p.tags),
-            novelty: p.tags.filter(t => !seed.tags.includes(t)).length
-        }))
-        .sort((a,b) => (a.overlap - b.overlap) || (b.novelty - a.novelty));
-
-    currentDraw = ranked.slice(0,3).map(x => x.p);
-    saveJSON(KEYS.currentDraw, currentDraw);
-    render();
-}
-
-/* ---- Credits modal ----
-function openCredits() {
-    const backdrop = document.createElement('div');
-    backdrop.className = 'pc-modal-backdrop';
-    backdrop.innerHTML = `
-    <div class="pc-modal" role="dialog" aria-modal="true" aria-label="Credits">
-      <h3>PatternChooser</h3>
-      <p>By OutBox Games — Bytecoded with Spruce.</p>
-      <p>Part of the <em>Actionary</em> toolkit (Topic Creator · PatternChooser · MechanicVerber).</p>
-      <div class="pc-modal-actions">
-        <button class="pc-modal-close">Close</button>
-      </div>
-    </div>
-  `;
-    backdrop.addEventListener('click', (e) => {
-        if (e.target.classList.contains('pc-modal-backdrop') || e.target.classList.contains('pc-modal-close')) {
-            backdrop.remove();
-        }
-    });
-    document.body.appendChild(backdrop);
-}
-
-/* ---- Event wiring ----
-
-// main card buttons (save/remove)
-mainCardsEl.addEventListener('click', (e) => {
-    const btn  = e.target.closest('button');
-    if (!btn) return;
-    const card = e.target.closest('.pc-card');
-    if (!card) return;
-
-    const patternId = card.dataset.patternId;
-    const action    = btn.dataset.action;
-
-    if (action === 'save')   addToScrapbook(patternId);
-    if (action === 'remove') removeMainCard(card);
-});
-
-// top nav tabs (image version)
-document.querySelectorAll('.pc-nav-img').forEach(btn => {
-    btn.addEventListener('click', () => {
-        // flatten EVERY tab first
-        document.querySelectorAll('.pc-nav-img').forEach(b => {
-            b.classList.remove('is-active');
-            b.blur(); // drop focus so it can't hold a state visually
-        });
-
-        // raise the clicked one
-        btn.classList.add('is-active');
-
-        // run the mode
-        const mode = btn.dataset.mode;
-        if (mode === 'simple')   drawThreeRandom();
-        if (mode === 'similar')  similarDraw();
-        if (mode === 'contrast') contrastDraw();
-        if (mode === 'credits')  openCredits();
-    });
-});
-
-// set initial active if none
-const firstImgTab = document.querySelector('.pc-nav-img[data-mode="simple"]');
-if (firstImgTab && !document.querySelector('.pc-nav-img.is-active')) {
-    firstImgTab.classList.add('is-active');
-}
-
-render();
-// --- Initial render ---
-if (currentDraw.length === 0) {
-    drawThreeRandom();   // or: render();  // <-- use this instead if you prefer showing the Welcome first
-} else {
-    render();
-}*/
-

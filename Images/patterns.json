@@ -8,7 +8,11 @@
                     "ats":  "Images/buttons/dynamic_green_ATS.png" },
     "aesthetic":  { "flip": "Images/buttons/aesthetic_violet_flip.png",
                     "back": "Images/buttons/aesthetic_violet_back.png",
-                    "ats":  "Images/buttons/aesthetic_violet_ATS.png" }
+                    "ats":  "Images/buttons/aesthetic_violet_ATS.png" },
+    "progression": { 
+                    "flip": "Images/buttons/progression_orange_flip.png",
+  		    "back": "Images/buttons/progression_orange_back.png",
+  		    "ats":  "Images/buttons/progression_orange_ATS.png" }
   },
   "defaults": {
     "card_bg": "Images/cards/card_bg.png",
@@ -17,23 +21,28 @@
   "patterns": [
     {
       "id": "risk_vs_reward",
-      "title": "Risk Vs Reward",
-      "category": "mechanic",
-      "tape": "Images/tapes/tape_blue_straight.png",
-      "diagram": "Images/diagrams/risk_vs_reward.png",
-      "front": "A mechanic in which players decide whether a potential reward is worth the potential risk or loss.",
-      "sources": {
-        "first_game": { "title": "Rogue", "year": 1980,
-          "note": "Permadeath and loot tables create constant value tradeoffs." },
-        "notables": [
-          { "title": "Dark Souls", "year": 2011,
-            "note": "Souls as currency: push deeper or bank safely at a bonfire." },
-          { "title": "FTL", "year": 2012,
-            "note": "Risky events vs. resource scarcity in every jump." },
-          { "title": "Spelunky", "year": 2008,
-            "note": "High-value items guarded by lethal layouts and ghost timer." }
-        ]
-      }
+  "title": "Risk Vs Reward",
+  "category": "mechanic",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "diagram": "Images/diagrams/risk_vs_reward.png",
+  "front": "A mechanic in which players decide whether a potential reward is worth the potential risk or loss.",
+  "tags": ["risk", "reward", "tension", "tradeoff"],
+  "sources": {
+    "first_game": {
+      "title": "Rogue",
+      "year": 1980,
+      "note": "Permadeath and loot tables create constant value tradeoffs."
+    },
+    "notables": [
+      { "title": "Dark Souls", "year": 2011,
+        "note": "Souls as currency: push deeper or bank safely at a bonfire." },
+      { "title": "FTL", "year": 2012,
+        "note": "Risky events vs. resource scarcity in every jump." },
+      { "title": "Spelunky", "year": 2008,
+        "note": "High-value items guarded by lethal layouts and ghost timer." }
+    ]
+  },
+  "games": []
     },
     {
        "id": "glass_cannon",
@@ -49,7 +58,8 @@
            "year": 1987,
            "note": "Early mages can delete enemies but collapse if anything looks at them funny."
          }
-       }
+       },
+  	"games": []
      },
      {
        "id": "safe_zone",
@@ -65,8 +75,230 @@
            "year": 1986,
            "note": "Old man caves offered brief safety from monsters and let players mentally reset."
          }
-       }
-     }
+       },
+  	"games": ["Toy Path (2025)"]
+     },
+{
+  "id": "combo_chain",
+  "title": "Combo Chain",
+  "category": "progression",
+  "diagram": "Images/diagrams/comboChain.png",
+  "tape": "Images/tapes/tape_orange_straight.png",
+  "front": "A sequence of actions that link together into a single escalating payoff. Missing a step breaks the chain and resets the reward.",
+  "tags": ["escalation", "rhythm", "mastery"],
+  "sources": {
+    "first_game": {
+      "title": "Street Fighter II",
+      "year": 1991,
+      "note": "Early combo discovery turned precise input strings into explosive payoff moments."
+    }
+  },
+  	"games": []
+},
+{
+  "id": "fog_of_war",
+  "title": "Fog of War",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/fogOfWar.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "Parts of the world or information are hidden until the player scouts or reveals them, turning knowledge itself into a resource.",
+  "tags": ["hidden_information", "exploration", "tension"],
+  "sources": {
+    "first_game": {
+      "title": "Warcraft: Orcs & Humans",
+      "year": 1994,
+      "note": "Shrouded maps made scouting and map awareness as important as building armies."
+    }
+  },
+  	"games": []
+},
+{
+  "id": "one_button",
+  "title": "One Button",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/oneButton.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "All core actions are mapped to a single input, forcing depth to come from timing, context, or level design instead of complex controls.",
+  "tags": ["accessibility", "simplicity", "input_design"],
+  "sources": {
+    "first_game": {
+      "title": "Flappy Bird",
+      "year": 2013,
+      "note": "A single tap drives the entire game loop, with difficulty coming purely from timing and level layout."
+    }
+  },
+  	"games": []
+},
+{
+  "id": "press_and_hold",
+  "title": "Press and Hold",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/pressAndHold.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Holding an input charges or alters an action, trading time and vulnerability for a stronger or different effect.",
+  "tags": ["charge", "risk_vs_reward", "input_design"],
+  "sources": {
+    "first_game": {
+      "title": "Mega Man 4",
+      "year": 1991,
+      "note": "Charging the Mega Buster rewards patience with a powerful shot but leaves the player briefly committed."
+    }
+  },
+  	"games": ["Toy Path (2025)"]
+},
+{
+  "id": "telegraphing",
+  "title": "Telegraphing",
+  "category": "aesthetic",
+  "diagram": "Images/diagrams/telegraphing.png",
+  "tape": "Images/tapes/tape_violet_straight.png",
+  "front": "Foes and hazards broadcast their upcoming actions through clear cues, letting players anticipate danger and feel responsible for success or failure.",
+  "tags": ["clarity", "anticipation", "fairness"],
+  "sources": {
+    "first_game": {
+      "title": "Punch-Out!!",
+      "year": 1984,
+      "note": "Boxers signal attacks with distinct animations, making reading tells the core of the gameplay."
+    }
+  },
+  	"games": []
+},
+{
+  "id": "resource_limited_movement",
+  "title": "Resource-Limited Movement",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/resource_limited_movement.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Every step spends a limited resource like breath, stamina, or fuel. Movement itself becomes a budget you have to manage under pressure.",
+  "tags": ["movement", "resource", "tension"],
+  "sources": {
+    "first_game": {
+      "title": "Rogue",
+      "year": 1980,
+      "note": "Every step consumes a turn, and hunger depletes over turns."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "environmental_timing_puzzle",
+  "title": "Environmental Timing Puzzle",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/environmental_timing_puzzle.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "The world itself runs on rhythms and cycles—bridges, hazards, and exits move or toggle in time, forcing the player to sync their actions with the environment.",
+  "tags": ["timing", "environment", "puzzle"],
+  "sources": {
+    "first_game": {
+      "title": "Pitfall!",
+      "year": 1982,
+      "note": "Wait for vine → grab with perfect timing → leap over crocodiles → move before next log rolls in."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "indirect_control",
+  "title": "Indirect Control",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/indirect_control.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Instead of steering actors directly, the player changes the world, rules, or timing and lets the system respond. You influence behavior without giving explicit orders.",
+  "tags": ["control", "systems", "indirection"],
+  "sources": {
+    "first_game": {
+      "title": "Lemmings",
+      "year": 1991,
+      "note": "Players alter the environment and roles instead of steering each lemming by hand."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "spatial_hazard",
+  "title": "Spatial Hazard",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/spatial_hazard.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "Specific tiles or regions of the map are dangerous by their very nature—water, pits, spikes, or patrol routes that punish careless positioning.",
+  "tags": ["hazard", "positioning", "level_design"],
+  "sources": {
+    "first_game": {
+      "title": "Adventure",
+      "year": 1979,
+      "note": "The map includes static threats like pits, labyrinth walls, dragons patrolling certain rooms, and one-hit-kill obstacles you must navigate around."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "soft_reset_loop",
+  "title": "Soft Reset Loop",
+  "category": "progression",
+  "diagram": "Images/diagrams/soft_reset_loop.png",
+  "tape": "Images/tapes/tape_orange_straight.png",
+  "front": "Failure sends the player back to the start of a short loop instead of erasing long-term progress, encouraging experimentation instead of punishment.",
+  "tags": ["failure", "loop", "forgiveness"],
+  "sources": {
+    "first_game": {
+      "title": "Donkey Kong",
+      "year": 1981,
+      "note": "When Mario dies, the game instantly resets the current stage without pushing the player back to the beginning of the entire game."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "short_stage_loop",
+  "title": "Short-Stage Loop",
+  "category": "progression",
+  "diagram": "Images/diagrams/short_stage_loop.png",
+  "tape": "Images/tapes/tape_orange_straight.png",
+  "front": "Levels are brief, focused challenges that can be retried quickly. The game’s pacing comes from many small loops instead of a few big ones.",
+  "tags": ["pacing", "structure", "retry"],
+  "sources": {
+    "first_game": {
+      "title": "Pac-Man",
+      "year": 1980,
+      "note": "After clearing a board, Pac-Man instantly transitions to the next short loop — same core rules, slightly higher difficulty."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "gradual_rule_introduction",
+  "title": "Gradual Rule Introduction",
+  "category": "progression",
+  "diagram": "Images/diagrams/gradual_rule_introduction.png",
+  "tape": "Images/tapes/tape_orange_straight.png",
+  "front": "New rules and mechanics appear one at a time, layered on top of what the player already understands, so complexity ramps up without overwhelming them.",
+  "tags": ["tutorial", "onboarding", "learning"],
+  "sources": {
+    "first_game": {
+      "title": "Super Mario Bros.",
+      "year": 1985,
+      "note": "World 1-1 -- The level literally teaches a player how to play without a single on-screen instruction"
+    }
+  },
+  "games": ["Toy Path (2025)"]
+},
+{
+  "id": "minimalist_feedback",
+  "title": "Minimalist Feedback",
+  "category": "aesthetic",
+  "diagram": "Images/diagrams/minimalist_feedback.png",
+  "tape": "Images/tapes/tape_violet_straight.png",
+  "front": "The game uses simple, clean cues instead of flashy effects—just enough sound, motion, or color to communicate state without visual noise.",
+  "tags": ["clarity", "aesthetic", "readability"],
+  "sources": {
+    "first_game": {
+      "title": "Pong",
+      "year": 1972,
+      "note": "The sound of the ball bouncing is the only signal you need to understand the state of play. No text, no UI clutter, no animation flair."
+    }
+  },
+  "games": ["Toy Path (2025)"]
+}
     // …one block per pattern
   ]
 }
