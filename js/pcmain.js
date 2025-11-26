@@ -145,8 +145,14 @@ function makeFront(p, catBtns) {
     img.className = 'pc-card-img';
 
 // Special-case Press and Hold so the diagram fits better
-    if (p.id === 'press_and_hold') {
-        img.classList.add('pc-card-img-press-hold');
+    if (p.id === 'press_and_hold' || p.id === 'risk_reward_tradeoff') {
+        img.classList.add('pc-card-img-shrink-by-35');
+    } else if (p.id === 'soft_failure_state' || p.id === 'stacking_buffs') {
+        img.classList.add('pc-card-img-shrink-a-tiny-bit');
+    } else if (p.id === 'escalating_stakes' || p.id === 'context_sensitive_actions' || p.id === 'priority_targeting' || p.id === 'deferred_choice') {
+        img.classList.add('pc-card-img-grow-a-tiny-bit');
+    } else if (p.id === 'interruptible_actions' || p.id === 'toggle_state_mechanic' || p.id === 'tempo_management') {
+        img.classList.add('pc-card-img-grow-by-half');
     }
 
     fig.appendChild(img);
@@ -733,16 +739,16 @@ function hydrateState() {
 }
 
 function persistCurrentDraw() {
-    /*const ids = currentDraw
+    const ids = currentDraw
         .map(p => p && (p.id ?? p.title))
         .filter(Boolean)
         .map(String);
-    saveJSON(KEYS.currentDraw, ids);*/
+    saveJSON(KEYS.currentDraw, ids);
 }
 
 function persistSaved() {
-    /*const ids = Array.from(savedSet);
-    saveJSON(KEYS.saved, ids);*/
+    const ids = Array.from(savedSet);
+    saveJSON(KEYS.saved, ids);
 }
 
 // Deck rendering (left side)

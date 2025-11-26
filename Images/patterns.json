@@ -135,13 +135,13 @@
   "category": "mechanic",
   "diagram": "Images/diagrams/pressAndHold.png",
   "tape": "Images/tapes/tape_blue_straight.png",
-  "front": "Holding an input charges or alters an action, trading time and vulnerability for a stronger or different effect.",
+  "front": "Holding an input sustains an ongoing action, such as blocking, aiming, throttling, or continuous fire. The action remains active only while the button is held.",
   "tags": ["charge", "risk_vs_reward", "input_design"],
   "sources": {
     "first_game": {
-      "title": "Mega Man 4",
-      "year": 1991,
-      "note": "Charging the Mega Buster rewards patience with a powerful shot but leaves the player briefly committed."
+      "title": "Kirby's Dream Land",
+      "year": 1992,
+      "note": "Holding the inhale button keeps Kirby continuously inhaling, only stopping when the button is released."
     }
   },
   	"games": ["Toy Path (2025)"]
@@ -298,7 +298,281 @@
     }
   },
   "games": ["Toy Path (2025)"]
+},
+{
+  "id": "hold_to_charge",
+  "title": "Hold-to-Charge",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/holdToCharge.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Holding an input gradually powers an attack or action, releasing at the player’s chosen timing.",
+  "tags": ["charge", "timing", "input_design"],
+  "sources": {
+    "first_game": {
+      "title": "Mega Man 4",
+      "year": 1991,
+      "note": "Introduced chargeable arm cannon shots with variable power levels."
+    }
+  },
+  "games": []
+},
+{
+  "id": "dual_mode_input",
+  "title": "Dual-Mode Input",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/dualModeInput.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "A single button that performs two distinct actions depending on context or duration.",
+  "tags": ["input_design", "state", "timing"],
+  "sources": {
+    "first_game": {
+      "title": "Super Mario Bros. 3",
+      "year": 1988,
+      "note": "Running long enough lets Raccoon Mario launch into flight using the same button."
+    }
+  },
+  "games": []
+},
+{
+  "id": "tap_rhythm_recognition",
+  "title": "Tap Rhythm Recognition",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/tapRhythmRecognition.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "The game responds to patterned tapping—for example, quick taps versus a steady rhythm.",
+  "tags": ["timing", "rhythm", "input_design"],
+  "sources": {
+    "first_game": {
+      "title": "Mario & Luigi: Superstar Saga",
+      "year": 2003,
+      "note": "Timed button patterns reward precision with higher attack damage."
+    }
+  },
+  "games": []
+},
+{
+  "id": "directional_quick_swap",
+  "title": "Directional Quick-Swap",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/directionalQuickSwap.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Players instantly switch tools or weapons by flicking toward a direction.",
+  "tags": ["inventory", "input_design", "speed"],
+  "sources": {
+    "first_game": {
+      "title": "Secret of Mana",
+      "year": 1993,
+      "note": "Directional ring menus allowed rapid swapping of weapons and items."
+    }
+  },
+  "games": []
+},
+{
+  "id": "toggle_state_mechanic",
+  "title": "Toggle State Mechanic",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/toggleStateMechanic.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Player switches between two distinct modes, each with its own strengths and weaknesses.",
+  "tags": ["state", "switching", "strategy"],
+  "sources": {
+    "first_game": {
+      "title": "Zelda II: The Adventure of Link",
+      "year": 1987,
+      "note": "Players toggled between different magic and combat stances."
+    }
+  },
+  "games": []
+},
+{
+  "id": "context_sensitive_actions",
+  "title": "Context-Sensitive Actions",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/contextSensitiveActions.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Buttons dynamically change function based on nearby objects or states.",
+  "tags": ["input_design", "context", "interaction"],
+  "sources": {
+    "first_game": {
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "year": 1998,
+      "note": "The 'A' button shifted functions depending on Link’s situation."
+    }
+  },
+  "games": []
+},
+{
+  "id": "one_way_movement_constraint",
+  "title": "One-Way Movement Constraint",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/oneWayMovementConstraint.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "Moving past a point locks the player out of returning the same way.",
+  "tags": ["movement", "commitment", "level_design"],
+  "sources": {
+    "first_game": {
+      "title": "Metroid",
+      "year": 1986,
+      "note": "Drop shafts and slide areas commit players to one-way paths."
+    }
+  },
+  "games": []
+},
+{
+  "id": "interruptible_actions",
+  "title": "Interruptible Actions",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/interruptableActions.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Actions can be canceled mid-animation to adapt on the fly.",
+  "tags": ["timing", "vulnerability", "adaptation"],
+  "sources": {
+    "first_game": {
+      "title": "Final Fantasy",
+      "year": 1987,
+      "note": "Spells could be interrupted mid-cast by enemy attacks or movement."
+    }
+  },
+  "games": []
+},
+{
+  "id": "risk_reward_tradeoff",
+  "title": "Risk–Reward Tradeoff",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/riskRewardTradeoff.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Taking a risk yields better rewards, but failure stings harder.",
+  "tags": ["risk", "reward", "tension", "tradeoff"],
+  "sources": {
+    "first_game": {
+      "title": "Rogue",
+      "year": 1980,
+      "note": "High-value loot is deeper in the dungeon, where danger escalates sharply."
+    }
+  },
+  "games": []
+},
+{
+  "id": "tempo_management",
+  "title": "Tempo Management",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/tempoManagement.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "Players must match or manipulate the pace of actions or enemy cycles.",
+  "tags": ["timing", "rhythm", "pressure"],
+  "sources": {
+    "first_game": {
+      "title": "Gradius",
+      "year": 1985,
+      "note": "Enemy waves and bullet cycles force constant pace control."
+    }
+  },
+  "games": []
+},
+{
+  "id": "resource_attrition",
+  "title": "Resource Attrition",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/resourceAttrition.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Resources slowly tick down over time, increasing long-term pressure.",
+  "tags": ["resource", "pressure", "survival"],
+  "sources": {
+    "first_game": {
+      "title": "Oregon Trail",
+      "year": 1971,
+      "note": "Food, health, and supplies constantly drain as the journey continues."
+    }
+  },
+  "games": []
+},
+{
+  "id": "deferred_choice",
+  "title": "Deferred Choice",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/deferredChoice.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "The player chooses later, with consequences growing the longer they wait.",
+  "tags": ["timing", "choice", "pressure"],
+  "sources": {
+    "first_game": {
+      "title": "Fire Emblem",
+      "year": 1990,
+      "note": "Delaying item usage or promotions shifts long-term risk and reward."
+    }
+  },
+  "games": []
+},
+{
+  "id": "stacking_buffs",
+  "title": "Stacking Buffs",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/stackingBuffs.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Effects build on top of each other to escalate power or synergy.",
+  "tags": ["power", "synergy", "state"],
+  "sources": {
+    "first_game": {
+      "title": "Diablo",
+      "year": 1996,
+      "note": "Buffs and auras compound to dramatically change combat flow."
+    }
+  },
+  "games": []
+},
+{
+  "id": "soft_failure_state",
+  "title": "Soft Failure State",
+  "category": "dynamic",
+  "diagram": "Images/diagrams/softFailureState.png",
+  "tape": "Images/tapes/tape_green_straight.png",
+  "front": "The player isn’t dead, but is heavily weakened or disadvantaged.",
+  "tags": ["failure", "penalty", "survival"],
+  "sources": {
+    "first_game": {
+      "title": "Metroid",
+      "year": 1986,
+      "note": "Low-health beeping warns the player they’re in a compromised state."
+    }
+  },
+  "games": []
+},
+{
+  "id": "priority_targeting",
+  "title": "Priority Targeting",
+  "category": "mechanic",
+  "diagram": "Images/diagrams/priorityTargeting.png",
+  "tape": "Images/tapes/tape_blue_straight.png",
+  "front": "Choosing which enemy or object to handle first determines success.",
+  "tags": ["strategy", "combat", "decision"],
+  "sources": {
+    "first_game": {
+      "title": "Gauntlet",
+      "year": 1985,
+      "note": "Players must target monster generators before getting overwhelmed."
+    }
+  },
+  "games": []
+},
+{
+  "id": "escalating_stakes",
+  "title": "Escalating Stakes",
+  "category": "progression",
+  "diagram": "Images/diagrams/escalatingStakes.png",
+  "tape": "Images/tapes/tape_orange_straight.png",
+  "front": "Each round or action raises the intensity or consequences of failure.",
+  "tags": ["escalation", "pressure", "progression"],
+  "sources": {
+    "first_game": {
+      "title": "Tetris",
+      "year": 1984,
+      "note": "Falling speed increases relentlessly, tightening decision windows."
+    }
+  },
+  "games": []
 }
+
+
     // …one block per pattern
   ]
 }

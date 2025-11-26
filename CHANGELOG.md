@@ -42,3 +42,7 @@
 -Determined welcome screen pushing behavior is acceptable and left as-is after mobile conflicts.
 -Verified iOS blank-screen issue was caused by IP address mismatch, not code.
 -Validated state persistence and scrapbook rendering after recent feature additions.
+
+# 11/25/2025 and 11/26/2026
+- Added sixteen more cards to bring total to 32 different patterns
+- Added 10 custom width styles for specific illustrations to make them fit the cards on the site more.
