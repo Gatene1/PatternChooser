@@ -145,13 +145,18 @@ function makeFront(p, catBtns) {
     img.className = 'pc-card-img';
 
 // Special-case Press and Hold so the diagram fits better
-    if (p.id === 'press_and_hold' || p.id === 'risk_reward_tradeoff') {
+    if (p.id === 'press_and_hold' || p.id === 'risk_reward_tradeoff' || p.id === 'upkeep_cost_mechanic' ||
+        p.id === 'chain_reaction_system' || p.id === 'synergy_amplifier') {
         img.classList.add('pc-card-img-shrink-by-35');
-    } else if (p.id === 'soft_failure_state' || p.id === 'stacking_buffs') {
+    } else if (p.id === 'soft_failure_state' || p.id === 'stacking_buffs' ||
+               p.id === 'cooldown_system' || p.id === 'guaranteed_progression') {
         img.classList.add('pc-card-img-shrink-a-tiny-bit');
-    } else if (p.id === 'escalating_stakes' || p.id === 'context_sensitive_actions' || p.id === 'priority_targeting' || p.id === 'deferred_choice') {
+    } else if (p.id === 'escalating_stakes' || p.id === 'context_sensitive_actions' || p.id === 'priority_targeting' || p.id === 'deferred_choice' ||
+               p.id === 'conversion_economy' || p.id === 'push_your_luck') {
         img.classList.add('pc-card-img-grow-a-tiny-bit');
-    } else if (p.id === 'interruptible_actions' || p.id === 'toggle_state_mechanic' || p.id === 'tempo_management') {
+    } else if (p.id === 'interruptible_actions' || p.id === 'toggle_state_mechanic' || p.id === 'tempo_management' ||
+               p.id === 'adaptive_enemy_behavior' || p.id === 'telegraphed_attack_pattern' ||
+               p.id === 'mob_pressure_curve') {
         img.classList.add('pc-card-img-grow-by-half');
     }
 
@@ -653,27 +658,48 @@ async function boot() {
 
 
 
-function openCredits(){
-    if(!els.modal){
+function openCredits() {
+    if (!els.modal) {
         els.modal = document.createElement('div');
         els.modal.id = 'pc-modal';
         els.modal.innerHTML = `
       <div class="pc-modal-backdrop"></div>
       <div class="pc-modal-dialog" role="dialog" aria-modal="true" aria-label="Credits">
-        <h2>Credits</h2>
-        <p><strong>PatternChooser</strong></p>
-        <p>A joint creation by David Riley<br>
-        and AI Partner (Spruce).<br>
-        David handled the scrapbook vibes,<br>
-        layout flair, diagrams, and the entire<br>
-        visual identity.<br>
-        Spruce wrangled the wiring, logic, and kept<br>
-        the tabs from falling off the digital<br>
-        notebook.<br><br>
+        <h2>PatternChooser v1.0</h2>
 
-        Fonts: Patrick Hand + Kalam<br>
-        Powered by too many late-night ideas<br>
-        and a dangerous amount of creativity.<br>
+        <p>
+          A joint creation by <strong>David Riley</strong><br>
+          <span style="opacity:0.85;">OutBox Games</span><br>
+          and AI Partner <strong>Spruce</strong>.
+        </p>
+
+        <p>
+          David handled the scrapbook vibes, layout flair, diagrams,<br>
+          and overall visual identity, plus all final edits.
+        </p>
+
+        <p>
+          Spruce helped wrangle the wiring, logic, JSON structure,<br>
+          and kept the tabs from falling off the digital notebook.
+        </p>
+
+        <p>
+          <strong>Contact:</strong><br>
+          <a href="mailto:david@outboxgames.com">david@outboxgames.com</a> | <a href="https://outboxgames.com" target="_blank">outboxgames.com</a>
+        </p>
+
+        <p>
+          PatternChooser is a visual reference tool for learning and exploring
+          game design patterns, featuring 50 illustrated patterns across
+          mechanic, dynamic, progression, and aesthetic categories.
+        </p>
+
+        <p>
+          <strong>Fonts:</strong> Patrick Hand &amp; Kalam<br>
+          <strong>License:</strong> Free for personal and educational use.<br>
+          Attribution to OutBox Games appreciated.
+        </p>
+
         <button class="pc-modal-close" aria-label="Close">Close</button>
       </div>`;
         document.body.appendChild(els.modal);
@@ -683,6 +709,8 @@ function openCredits(){
     document.body.classList.add('modal-open');     // ⟵ lock background
     els.modal.classList.add('is-open');
 }
+
+
 
 function closeCredits(){
     document.body.classList.remove('modal-open');

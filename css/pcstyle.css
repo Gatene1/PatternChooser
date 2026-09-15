@@ -369,7 +369,7 @@ body { margin: 0; padding: 0; font-family: 'Patrick Hand', 'system-ui', 'sans-se
 .pc-tab-green:hover { background: linear-gradient(#f1fbef, #daf6d3); }
 .pc-tab-pink:hover  { background: linear-gradient(#fff0f7, #ffd9eb); }
 /* Logo bottom-left */
-.pc-logo-link { position: fixed; left: 18px; bottom: 18px; }
+.pc-logo-link { position: fixed; left: 18px; bottom: 18px; text-decoration: none; color: #fff;}
 .pc-logo { height: 40px; opacity: 0.9; }
 
 

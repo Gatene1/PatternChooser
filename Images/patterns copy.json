@@ -24,7 +24,7 @@
   "title": "Risk Vs Reward",
   "category": "mechanic",
   "tape": "Images/tapes/tape_blue_straight.png",
-  "diagram": "Images/diagrams/riskVsReward.png",
+  "diagram": "Images/diagrams/risk_vs_reward.png",
   "front": "A mechanic in which players decide whether a potential reward is worth the potential risk or loss.",
   "tags": ["risk", "reward", "tension", "tradeoff"],
   "sources": {
@@ -876,45 +876,11 @@
     }
   },
   "games": []
-},
-{
-  "id": "push_your_luck",
-  "title": "Push Your Luck",
-  "category": "dynamic",
-  "diagram": "Images/diagrams/pushYourLuck.png",
-  "tape": "Images/tapes/tape_green_straight.png",
-  "front": "Players can stop and secure their gains or continue risking everything for greater rewards.",
-  "tags": ["risk", "reward", "escalation", "decision"],
-  "sources": {
-    "first_game": {
-      "title": "Canfield Solitaire",
-      "year": 1890,
-      "note": "Players can keep drawing cards to improve their position but risk ruining a strong board state."
-    }
-  },
-  "games": []
-},
-{
-  "id": "guaranteed_progression",
-  "title": "Guaranteed Progression",
-  "category": "progression",
-  "diagram": "Images/diagrams/guaranteedProgression.png",
-  "tape": "Images/tapes/tape_orange_straight.png",
-  "front": "Even when the player fails, the game advances in some way—unlocking paths, knowledge, or persistent upgrades.",
-  "tags": ["progression", "failure", "persistence"],
-  "sources": {
-    "first_game": {
-      "title": "Rogue Legacy",
-      "year": 2013,
-      "note": "Each death grants gold that permanently upgrades the castle and future characters."
-    }
-  },
-  "games": []
 }
 
 
 
 
-    
+    // …one block per pattern
   ]
 }

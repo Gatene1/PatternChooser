@@ -78,3 +78,9 @@ Mob Pressure Curve — Difficulty scales through increasing enemy count, not str
 Predictive Enemy Behavior — Enemies respond to player habits, not just fixed patterns.
 
 Boss Phase Shift — A boss shifts behaviors or mechanics mid-fight at HP thresholds.
+
+- Additional 2 patterns for first issue of Pattern Scrutiny
+
+Push Your Luck - Players can stop and secure their gains or continue risking everything for greater rewards.
+
+Guaranteed Progression - Even when the player fails, the game advances in some way—unlocking paths, knowledge, or persistent upgrades.

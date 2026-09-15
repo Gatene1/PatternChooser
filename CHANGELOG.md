@@ -46,3 +46,7 @@
 # 11/25/2025 and 11/26/2026
 - Added sixteen more cards to bring total to 32 different patterns
 - Added 10 custom width styles for specific illustrations to make them fit the cards on the site more.
+
+# 11/27/2025 and 11/28/2026
+- Added the other 18 cards to bring the total of game design cards to 50!
+- Added 8 custom width styles for specific illustrations to make them fit the cards on the site better.
