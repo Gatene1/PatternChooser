@@ -50,3 +50,9 @@
 # 11/27/2025 and 11/28/2026
 - Added the other 18 cards to bring the total of game design cards to 50!
 - Added 8 custom width styles for specific illustrations to make them fit the cards on the site better.
+
+# 9/16/2026 and 9/17/2026
+- Began adding another set of 16 cards to catch up with Follow the Butterflies.
+- Changed the flexbox layout to make the bottom button column begin only when the middle column ends.
+- Added an image resizing system to use more of the card real estate.
+- Made the image size default to 75% its original size, but made 2 other presets (small and medium) for each image to fit comofortably in its card.

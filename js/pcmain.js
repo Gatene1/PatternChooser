@@ -144,21 +144,22 @@ function makeFront(p, catBtns) {
     img.alt = `${p.title} diagram`;
     img.className = 'pc-card-img';
 
-// Special-case Press and Hold so the diagram fits better
-    if (p.id === 'press_and_hold' || p.id === 'risk_reward_tradeoff' || p.id === 'upkeep_cost_mechanic' ||
-        p.id === 'chain_reaction_system' || p.id === 'synergy_amplifier') {
-        img.classList.add('pc-card-img-shrink-by-35');
-    } else if (p.id === 'soft_failure_state' || p.id === 'stacking_buffs' ||
-               p.id === 'cooldown_system' || p.id === 'guaranteed_progression') {
-        img.classList.add('pc-card-img-shrink-a-tiny-bit');
-    } else if (p.id === 'escalating_stakes' || p.id === 'context_sensitive_actions' || p.id === 'priority_targeting' || p.id === 'deferred_choice' ||
-               p.id === 'conversion_economy' || p.id === 'push_your_luck') {
-        img.classList.add('pc-card-img-grow-a-tiny-bit');
-    } else if (p.id === 'interruptible_actions' || p.id === 'toggle_state_mechanic' || p.id === 'tempo_management' ||
-               p.id === 'adaptive_enemy_behavior' || p.id === 'telegraphed_attack_pattern' ||
-               p.id === 'mob_pressure_curve') {
-        img.classList.add('pc-card-img-grow-by-half');
+//Special-case image widths
+    if (p.special_diagram_width) {
+        if (p.special_diagram_width === "small") {
+            img.classList.add('pc-card-img-small');
+        } else if (p.special_diagram_width === "medium") {
+            img.classList.add('pc-card-img-medium');
+        } else if (p.special_diagram_width === "large") {
+            img.classList.add('pc-card-img-default');
+        }
     }
+    /*if (p.id === 'environmental_timing_puzzle' ) {
+        img.classList.add('pc-card-img-medium');
+    } else if (p.id === 'chain_reaction_system') {
+        img.classList.add('pc-card-img-small');
+    }*/
+
 
     fig.appendChild(img);
 

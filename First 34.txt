@@ -84,3 +84,33 @@ Boss Phase Shift — A boss shifts behaviors or mechanics mid-fight at HP thresh
 Push Your Luck - Players can stop and secure their gains or continue risking everything for greater rewards.
 
 Guaranteed Progression - Even when the player fails, the game advances in some way—unlocking paths, knowledge, or persistent upgrades.
+
+- Next 16 following the Webpage release for FtB
+
+Core Gameplay Loop - Players repeat a central cycle of actions that forms the foundation of the game experience.
+
+Repeated Game World / Reconfigurable Level - Players revisit the same game space while its layout, contents, or conditions change between sessions.
+
+Randomized / Variable Setup - Each session begins with different placements, conditions, or elements that change how play unfolds.
+
+Hotspots / Points of Interest - Distinct locations draw player attention and encourage interaction, investigation, or decision-making.
+
+Environmental Storytelling - The game world communicates story and context through its spaces, objects, and visual details.
+
+Visual Language / Signposting - Consistent visual cues help players recognize important locations, objects, paths, or interactions.
+
+Occlusion / Layered Space - Parts of the environment conceal other areas or objects, encouraging movement and discovery.
+
+Spatial Familiarity / Mastery - Repeated exposure lets players learn a space and use that knowledge more effectively over time.
+
+NPC Reactions / Social Consequences - NPCs respond to player actions, creating social feedback or consequences within the game world.
+
+Emergent Situations - Interacting systems create unscripted situations that can develop differently during each play session.
+
+Time Limit / Session Boundary - A limited amount of time defines the play session and forces players to prioritize their actions.
+
+Goal Completion - Players work toward a defined objective whose completion marks success or advances play.
+
+Diegetic Progression Trigger - Progression occurs through an action or event that exists naturally within the game world.
+
+Controlled Repetition - Familiar actions or situations are repeated with deliberate changes that keep subsequent encounters meaningful.
