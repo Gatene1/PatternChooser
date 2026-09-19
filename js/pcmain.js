@@ -6,6 +6,7 @@ const tabs = {
     simple:  document.getElementById('tabSimple'),
     similar: document.getElementById('tabSimilar'),
     contrast:document.getElementById('tabContrast'),
+    search:document.getElementById('tabSearch'),
     credits: document.getElementById('tabCredits'),
 };
 
@@ -23,12 +24,16 @@ const els = {
 // Panels for Similar / Contrast views
 const panels = {
     similar: document.getElementById('similarPanel'),
-    contrast: document.getElementById('contrastPanel')
+    contrast: document.getElementById('contrastPanel'),
+    search: document.getElementById('searchPanel')
 };
 
-// Track which main view is active: 'simple' | 'similar' | 'contrast'
+// Track which main view is active: 'simple' | 'similar' | 'contrast' | 'search'
 let currentMode = 'simple';
 
+const searchInput = document.querySelector('.pc-search-input');
+const searchButton = document.querySelector('.pc-search-button');
+const searchBar = document.querySelector('.pc-search-bar');
 
 function updateSimpleTabAppearance() {
     const btn = tabs.simple;
@@ -441,13 +446,16 @@ function setMode(mode) {
         tabs.similar.classList.add('is-active');
     } else if (mode === 'contrast' && tabs.contrast) {
         tabs.contrast.classList.add('is-active');
+    } else if (mode === 'search' && tabs.search) {
+        tabs.search.classList.add('is-active');
     }
 
     // Section visibility
     if (mode === 'simple') {
         // Deck on, panels off
         els.empty.style.display = currentDraw.length ? 'none' : '';
-        els.deck.style.display = 'flex';
+        els.deck.style.display = 'grid';
+        requestAnimationFrame(layoutMasonry);
 
         if (panels.similar) {
             panels.similar.style.display = 'none';
@@ -457,12 +465,16 @@ function setMode(mode) {
             panels.contrast.style.display = 'none';
             panels.contrast.hidden = true;
         }
+        if (panels.search) {
+            panels.search.style.display = 'none';
+            panels.search.hidden = true;
+        }
     } else {
         // Deck off, both panels off, then switch the one we care about on
         els.empty.style.display = 'none';
         els.deck.style.display = 'none';
 
-        ['similar', 'contrast'].forEach(key => {
+        ['similar', 'contrast', 'search'].forEach(key => {
             const panel = panels[key];
             if (!panel) return;
             panel.style.display = 'none';
@@ -475,7 +487,9 @@ function setMode(mode) {
             activePanel.hidden = false;
         }
 
-        renderRelationPanel(mode);
+        if (mode === 'similar' || mode === 'contrast') {
+            renderRelationPanel(mode);
+        }
     }
     // Update Simple/Deck tab art + label based on mode
     updateSimpleTabAppearance();
@@ -511,6 +525,32 @@ function findContrastPatterns(base) {
         }
         // Contrast = no overlapping tags
         return !tags.some(t => baseTags.has(t));
+    });
+}
+
+function findSearchPatterns(query) {
+    if (!query || !manifest?.patterns) return [];
+
+    const terms = query
+        .toLowerCase()
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    return manifest.patterns.filter(p => {
+        const searchableText = [
+            p.title,
+            p.front,
+            p.category,
+            ...(p.tags || []),
+            ...(p.games || []),
+            p.sources?.first_game?.title
+        ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+        return terms.every(term => searchableText.includes(term));
     });
 }
 
@@ -578,6 +618,55 @@ function updateSimilarAndContrastPanels() {
 }
 
 
+function renderSearchPanel(query) {
+    const panel = panels.search;
+    if (!panel) return;
+
+    const inner = panel.querySelector('.pc-panel-inner');
+    if (!inner) return;
+
+    inner.innerHTML = '';
+
+    const results = findSearchPatterns(query);
+
+    const title = document.createElement('h2');
+    title.className = 'pc-panel-title';
+    title.textContent = 'Search Results';
+
+    const subtitle = document.createElement('p');
+    subtitle.className = 'pc-panel-subtitle';
+
+    if (!query.trim()) {
+        subtitle.textContent = 'Enter one or more keywords to search the pattern library.';
+        inner.append(title, subtitle);
+        return;
+    }
+
+    subtitle.textContent =
+        `${results.length} pattern${results.length === 1 ? '' : 's'} found for "${query}"`;
+
+    if (!results.length) {
+        inner.append(title, subtitle);
+        return;
+    }
+
+    const list = document.createElement('div');
+    list.className = 'pc-panel-cards';
+
+    results.forEach(p => {
+        const card = makeCard(p, { context: 'panel' });
+
+        if (p.id != null) {
+            card.dataset.patternId = String(p.id);
+        } else if (p.title) {
+            card.dataset.patternId = String(p.title);
+        }
+
+        list.appendChild(card);
+    });
+
+    inner.append(title, subtitle, list);
+}
 
 
 
@@ -623,6 +712,7 @@ async function boot() {
             // If there are no cards yet, let the welcome text show
             els.empty.style.display = currentDraw.length ? 'none' : '';
         }
+        searchBar.classList.remove('pc-search-bar-hidden');
     });
 
 
@@ -630,8 +720,9 @@ async function boot() {
     tabs.similar?.addEventListener('click', (e)=>{
         e.preventDefault();
         setMode('similar');
+        searchBar.classList.add('pc-search-bar-hidden');
         document.documentElement.style.setProperty('--pc-main-background',
-            'url(\'../Images/similar_patterns_bg.png\') center/1024px auto repeat');
+            'var(--pc-similar-background)');
         pcLogoImg[0].setAttribute('src', 'Images/sp_logo.png');
         pcTape[0].setAttribute('src', 'Images/tapes/tape_blue_straight.png');
         // panel auto-renders based on selectedPatternId
@@ -642,11 +733,18 @@ async function boot() {
     tabs.contrast?.addEventListener('click', (e)=>{
         e.preventDefault();
         setMode('contrast');
+        searchBar.classList.add('pc-search-bar-hidden');
         document.documentElement.style.setProperty('--pc-main-background',
-            'url(\'../Images/contrasting_patterns_bg.png\') center/1024px auto repeat');
+            'var(--pc-contrasting-background)');
         pcLogoImg[0].setAttribute('src', 'Images/contp_logo.png');
         pcTape[0].setAttribute('src', 'Images/tapes/tape_orange_straight.png');
         updateSimilarAndContrastPanels();
+    });
+
+    // SEARCH TAB
+    tabs.search?.addEventListener('click', (e)=>{
+        e.preventDefault();
+        openSearchMode();
     });
 
     // CREDITS TAB
@@ -654,9 +752,37 @@ async function boot() {
         e.preventDefault();
         openCredits();
     });
+
+    searchButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openSearchMode();
+    });
+
+    searchInput?.addEventListener('keydown', (e) => {
+
+        if (e.key === 'Enter') {
+            openSearchMode();
+        }
+    });
+
 }
 
 
+function openSearchMode() {
+    setMode('search');
+
+    searchBar.classList.remove('pc-search-bar-hidden');
+
+    document.documentElement.style.setProperty(
+        '--pc-main-background',
+        'var(--pc-search-background)'
+    );
+
+    pcLogoImg[0].setAttribute('src', 'Images/search_logo.png');
+    pcTape[0].setAttribute('src', 'Images/tapes/tape_violet_straight.png');
+
+    renderSearchPanel(searchInput.value);
+}
 
 
 function openCredits() {

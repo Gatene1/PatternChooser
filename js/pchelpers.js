@@ -75,13 +75,25 @@ function renderDeck() {
 
     currentDraw.forEach(p => {
         const card = makeCard(p, { context: 'deck' });
+
         if (p.id != null) {
             card.dataset.patternId = String(p.id);
         } else if (p.title) {
             card.dataset.patternId = String(p.title);
         }
+
         els.deck.appendChild(card);
     });
+
+    const images = els.deck.querySelectorAll('.pc-card-img');
+
+    images.forEach(img => {
+        if (!img.complete) {
+            img.addEventListener('load', layoutMasonry, { once: true });
+        }
+    });
+
+    requestAnimationFrame(layoutMasonry);
 }
 
 // Scrapbook rendering (right side)
@@ -104,11 +116,21 @@ function renderSaved() {
         // Optional origin badge (Similar / Contrast only)
         if (typeof savedOrigins !== 'undefined' && savedOrigins && savedOrigins[sid]) {
             const origin = savedOrigins[sid];
-            if (origin === 'similar' || origin === 'contrast') {
+
+            if (origin === 'similar' || origin === 'contrast' || origin === 'search') {
                 const badge = document.createElement('div');
-                badge.className = 'pc-saved-card-badge' +
-                    (origin === 'contrast' ? ' is-contrast' : '');
-                badge.textContent = origin === 'similar' ? 'Similar' : 'Contrast';
+                badge.className = 'pc-saved-card-badge';
+
+                if (origin === 'contrast') {
+                    badge.classList.add('is-contrast');
+                    badge.textContent = 'Contrast';
+                } else if (origin === 'search') {
+                    badge.classList.add('is-search');
+                    badge.textContent = 'Custom Search';
+                } else {
+                    badge.textContent = 'Similar';
+                }
+
                 item.appendChild(badge);
             }
         }
@@ -212,5 +234,20 @@ function removeFromSaved(id) {
     renderSaved();
 }
 
+function layoutMasonry() {
+    const grid = els.deck;
+    if (!grid) return;
 
+    const gap = 45;
+    const cards = grid.querySelectorAll('.pc-card');
+
+    cards.forEach(card => {
+        card.style.gridRowEnd = '';
+
+        const height = card.getBoundingClientRect().height;
+        const span = Math.ceil(height + gap);
+
+        card.style.gridRowEnd = `span ${span}`;
+    });
+}
 

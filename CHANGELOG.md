@@ -56,3 +56,15 @@
 - Changed the flexbox layout to make the bottom button column begin only when the middle column ends.
 - Added an image resizing system to use more of the card real estate.
 - Made the image size default to 75% its original size, but made 2 other presets (small and medium) for each image to fit comofortably in its card.
+
+# 9/18/2026
+- Changed the flexbox layout of the cards as a whole to a gridbox layout that shows the cards in Z order, and each card has varying height.
+- Changed CSS rules to make the card display better.
+- Created the images necessary to make the search function.
+- Added the search bar to the "Simple Draw" and "Search" modes.
+- Created the "Search" mode, and placed the images into it.
+- Created the "Search" mode tab.
+- Added Event Listeners for the search bar for when activated, it jumps into "Search" mode, and searches the keyword.
+- Updated version to 1.1.0.52 (SimVer compliant with minor release being the Search mode).
+- Added the search function functionality.
+- Fixed a bug that allowed cards to stack when returning to the Deck.

@@ -42,7 +42,7 @@
         "note": "High-value items guarded by lethal layouts and ghost timer." }
     ]
   },
-  "games": []
+  "games": ["Follow the Butterflies (2026)"]
     },
     {
        "id": "glass_cannon",
@@ -401,7 +401,7 @@
       "note": "The 'A' button shifted functions depending on Link’s situation."
     }
   },
-  "games": []
+  "games": ["Follow the Butterflies (2026)"]
 },
 {
   "id": "one_way_movement_constraint",
@@ -629,6 +629,7 @@
   "title": "Navigational Loop",
   "category": "dynamic",
   "diagram": "Images/diagrams/navigationalLoop.png",
+  "special_diagram_width": "medium",
   "tape": "Images/tapes/tape_green_straight.png",
   "front": "A route circles back into itself, helping (or confusing) player orientation by tying the map together.",
   "tags": ["navigation", "map_design", "orientation"],

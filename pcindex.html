@@ -33,9 +33,23 @@
                 <button id="tabSimple" class="pc-nav-img pc-tab-simple"   data-mode="simple"   aria-label="Simple Draw"></button>
                 <button id="tabSimilar" class="pc-nav-img pc-tab-similar"  data-mode="similar"  aria-label="Similar Patterns"></button>
                 <button id="tabContrast" class="pc-nav-img pc-tab-contrast" data-mode="contrast" aria-label="Contrast Patterns"></button>
+                <button id="tabSearch" class="pc-nav-img pc-tab-search" data-mode="search" aria-label="Search Patterns"></button>
                 <button id="tabCredits" class="pc-nav-img pc-tab-credits"  data-mode="credits"  aria-label="Credits"></button>
             </nav>
         </header>
+
+        <div class="pc-search-bar">
+            <input
+                    type="search"
+                    class="pc-search-input"
+                    placeholder="Search patterns by keywords..."
+                    aria-label="Search patterns by keywords"
+            >
+
+            <button class="pc-search-button" type="button" aria-label="Search">
+                <img src="Images/icons/magnifying_glass.png" alt="">
+            </button>
+        </div>
 
         <!-- Main content area -->
         <main class="pc-main">
@@ -64,6 +78,12 @@
                 </div>
             </section>
 
+            <!-- Search panel -->
+            <section class="pc-main-panel pc-main-panel-search" id="searchPanel" hidden>
+                <div class="pc-panel-inner">
+                    <!-- Content is injected by JS -->
+                </div>
+            </section>
 
             <aside class="pc-saved" id="savedStack">
                 <h3 class="pc-saved-label"></h3>
@@ -74,7 +94,7 @@
     <!-- Bottom-left logo (stays on desk) -->
     <a class="pc-logo-link" href="https://outboxgames.com" target="_ogSite" rel="noopener">
         <img src="Images/oglogo.svg" alt="OutBox Games" class="pc-logo"> <br>
-        Version: 1.0.0.52
+        Version: 1.1.0.52
     </a>
 </div>
 
